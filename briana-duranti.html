@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briana Duranti — Arquitetura de Interiores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@100;200;300;400;500&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --linho: #F5F1EC;
+  --linho2: #EDE7DC;
+  --chumbo: #1C1C1C;
+  --chumbo2: #2E2A26;
+  --terra: #C4714A;
+  --terra2: #A85C3A;
+  --cinza: #9A8F84;
+  --cinza2: #C4B8AE;
+  --branco: #FDFCFA;
+  --nav-h: 72px;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--linho);
+  color: var(--chumbo);
+  overflow-x: hidden;
+  cursor: none;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+button { font-family: inherit; cursor: none; }
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--chumbo);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
+}
+.cursor.grow { width: 40px; height: 40px; background: transparent; border: 0.5px solid var(--chumbo); }
+.cursor.terra { background: var(--terra); }
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 0.5px solid var(--chumbo);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s var(--ease), opacity 0.3s;
+  opacity: 0.4;
+}
+
+/* ─── NAVBAR ─── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  z-index: 100;
+  transition: background 0.5s var(--ease), border-color 0.5s;
+  border-bottom: 0.5px solid transparent;
+}
+#navbar.scrolled {
+  background: rgba(245, 241, 236, 0.96);
+  backdrop-filter: blur(12px);
+  border-color: rgba(196, 184, 174, 0.3);
+}
+.nav-logo {
+  display: flex; flex-direction: column; gap: 1px;
+  opacity: 0; transform: translateY(-8px);
+  animation: fadeDown 0.8s var(--ease) 0.3s forwards;
+}
+.nav-logo-name {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 22px;
+  color: var(--chumbo); line-height: 1;
+  letter-spacing: -0.3px;
+}
+.nav-logo-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 40px;
+  list-style: none;
+  opacity: 0; transform: translateY(-8px);
+  animation: fadeDown 0.8s var(--ease) 0.5s forwards;
+}
+.nav-links a {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 300;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 0.5px; background: var(--terra);
+  transition: width 0.4s var(--ease);
+}
+.nav-links a:hover { color: var(--chumbo); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--linho);
+  background: var(--chumbo); border: none;
+  padding: 10px 22px; font-weight: 300;
+  transition: background 0.3s;
+  opacity: 0; transform: translateY(-8px);
+  animation: fadeDown 0.8s var(--ease) 0.7s forwards;
+}
+.nav-cta:hover { background: var(--terra); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 4px;
+}
+.hamburger span {
+  display: block; width: 24px; height: 0.5px;
+  background: var(--chumbo);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* ─── MOBILE MENU ─── */
+.mobile-menu {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--chumbo); z-index: 99;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 32px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 36px;
+  color: var(--linho); letter-spacing: -0.5px;
+  transition: color 0.3s;
+}
+.mobile-menu a:hover { color: var(--terra); }
+.mobile-close {
+  position: absolute; top: 24px; right: 48px;
+  background: none; border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200;
+}
+
+/* ─── HERO ─── */
+#hero {
+  height: 100vh; min-height: 600px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: flex-end;
+  padding: 0 48px 80px;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: var(--chumbo2);
+}
+.hero-bg img {
+  opacity: 0.55;
+  transition: opacity 1.5s;
+  object-position: center 30%;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(28,28,28,0.7) 0%, rgba(28,28,28,0.1) 60%, transparent 100%);
+}
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 900px;
+}
+.hero-tag {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--terra);
+  font-weight: 200; margin-bottom: 20px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s var(--ease) 0.8s forwards;
+}
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: clamp(48px, 8vw, 100px);
+  color: var(--branco); line-height: 0.92;
+  letter-spacing: -2px; margin-bottom: 28px;
+}
+.hero-title .line {
+  display: block; overflow: hidden;
+}
+.hero-title .line span {
+  display: block;
+  transform: translateY(110%);
+  animation: slideUp 1s var(--ease) forwards;
+}
+.hero-title .line:nth-child(1) span { animation-delay: 0.9s; }
+.hero-title .line:nth-child(2) span { animation-delay: 1.05s; }
+.hero-title .line:nth-child(3) span { animation-delay: 1.2s; }
+.hero-sub {
+  display: flex; align-items: center; gap: 20px;
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.8s var(--ease) 1.5s forwards;
+}
+.hero-sub-line {
+  width: 40px; height: 0.5px; background: var(--terra);
+}
+.hero-sub-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(245,241,236,0.6);
+  font-weight: 200;
+}
+.hero-scroll {
+  position: absolute; bottom: 80px; right: 48px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  opacity: 0; animation: fadeUp 0.8s var(--ease) 2s forwards;
+}
+.hero-scroll-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(245,241,236,0.4);
+  font-weight: 200; writing-mode: vertical-rl;
+}
+.hero-scroll-bar {
+  width: 0.5px; height: 48px; background: var(--terra);
+  animation: scrollBar 2s var(--ease) 2s infinite;
+}
+@keyframes scrollBar {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ─── SECTIONS BASE ─── */
+section { padding: 120px 48px; }
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.delay-1 { transition-delay: 0.1s; }
+.reveal.delay-2 { transition-delay: 0.2s; }
+.reveal.delay-3 { transition-delay: 0.3s; }
+.reveal.delay-4 { transition-delay: 0.4s; }
+.section-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--terra);
+  font-weight: 200; display: flex; align-items: center; gap: 14px;
+  margin-bottom: 48px;
+}
+.section-eyebrow::before {
+  content: ''; width: 32px; height: 0.5px; background: var(--terra);
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: clamp(36px, 5vw, 64px);
+  color: var(--chumbo); line-height: 1.0;
+  letter-spacing: -1px;
+}
+
+/* ─── SOBRE ─── */
+#sobre {
+  background: var(--branco);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+  align-items: center;
+}
+.sobre-img {
+  aspect-ratio: 3/4; overflow: hidden; position: relative;
+}
+.sobre-img img { transition: transform 0.8s var(--ease); }
+.sobre-img:hover img { transform: scale(1.04); }
+.sobre-img-caption {
+  position: absolute; bottom: 24px; left: 24px;
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(245,241,236,0.6);
+  font-weight: 200;
+}
+.sobre-text { display: flex; flex-direction: column; gap: 28px; }
+.sobre-lead {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 22px;
+  color: var(--chumbo); line-height: 1.4;
+}
+.sobre-body {
+  font-size: 15px; color: var(--cinza);
+  line-height: 1.85; font-weight: 300;
+}
+.sobre-nums {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-top: 0.5px solid var(--linho2);
+  padding-top: 32px; margin-top: 8px;
+}
+.sobre-num { padding: 0 24px 0 0; }
+.sobre-num:nth-child(2) { padding: 0 0 0 24px; border-left: 0.5px solid var(--linho2); }
+.sobre-num-val {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 48px;
+  color: var(--terra); line-height: 1;
+}
+.sobre-num-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--cinza2);
+  font-weight: 200; margin-top: 4px;
+}
+
+/* ─── PORTFÓLIO ─── */
+#portfolio { background: var(--linho); padding-bottom: 80px; }
+.portfolio-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 64px;
+}
+.portfolio-cats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.cat-card {
+  position: relative; overflow: hidden;
+  aspect-ratio: 4/5; background: var(--chumbo2);
+  cursor: none;
+}
+.cat-card:first-child { grid-column: 1; grid-row: 1; }
+.cat-card:nth-child(2) { grid-column: 2; grid-row: 1 / 3; aspect-ratio: auto; }
+.cat-card:nth-child(3) { grid-column: 1; grid-row: 2; }
+.cat-card:nth-child(4) { grid-column: 1 / 3; grid-row: 3; aspect-ratio: 16/7; }
+.cat-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.8s var(--ease), opacity 0.5s;
+}
+.cat-card:hover .cat-bg { transform: scale(1.06); opacity: 0.7; }
+.cat-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(28,28,28,0.75) 0%, transparent 60%);
+  opacity: 0.7;
+  transition: opacity 0.4s;
+}
+.cat-card:hover .cat-overlay { opacity: 1; }
+.cat-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 32px; z-index: 2;
+  transform: translateY(8px);
+  transition: transform 0.4s var(--ease);
+}
+.cat-card:hover .cat-content { transform: translateY(0); }
+.cat-tag {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--terra);
+  font-weight: 200; margin-bottom: 8px;
+}
+.cat-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--branco); line-height: 1.1;
+}
+.cat-cta {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 16px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s var(--ease) 0.1s, transform 0.4s var(--ease) 0.1s;
+}
+.cat-card:hover .cat-cta { opacity: 1; transform: translateY(0); }
+.cat-cta-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--linho);
+  font-weight: 200;
+}
+.cat-cta-line { width: 24px; height: 0.5px; background: var(--terra); }
+
+/* ─── PROCESSO ─── */
+#processo {
+  background: var(--chumbo);
+  padding: 120px 48px;
+}
+.processo-header { margin-bottom: 80px; }
+.processo-header .section-title { color: var(--linho); }
+.processo-header .section-eyebrow { color: var(--terra); }
+.processo-header .section-eyebrow::before { background: var(--terra); }
+.processo-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 0.5px solid rgba(196,184,174,0.15);
+}
+.processo-item {
+  padding: 40px 32px 40px 0;
+  border-right: 0.5px solid rgba(196,184,174,0.15);
+}
+.processo-item:last-child { border-right: none; padding-right: 0; }
+.processo-item:not(:first-child) { padding-left: 32px; }
+.processo-num {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 48px;
+  color: var(--terra); line-height: 1; opacity: 0.4;
+  margin-bottom: 24px;
+}
+.processo-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 20px;
+  color: var(--linho); line-height: 1.2;
+  margin-bottom: 16px;
+}
+.processo-text {
+  font-size: 13px; color: rgba(196,184,174,0.6);
+  line-height: 1.8; font-weight: 300;
+}
+
+/* ─── DEPOIMENTOS ─── */
+#depoimentos {
+  background: var(--branco);
+  padding: 120px 0;
+  overflow: hidden;
+}
+.dep-header { padding: 0 48px; margin-bottom: 64px; }
+.dep-track-wrap { overflow: hidden; }
+.dep-track {
+  display: flex; gap: 2px;
+  transition: transform 0.6s var(--ease);
+}
+.dep-card {
+  min-width: calc(50% - 1px); padding: 56px 64px;
+  background: var(--linho);
+  flex-shrink: 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 320px;
+}
+.dep-quote-mark {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 96px;
+  color: var(--terra); line-height: 0.6;
+  opacity: 0.25; margin-bottom: 20px;
+}
+.dep-text {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 20px;
+  color: var(--chumbo); line-height: 1.55;
+  flex: 1;
+}
+.dep-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 36px; padding-top: 24px;
+  border-top: 0.5px solid var(--linho2);
+}
+.dep-author-name {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px; font-weight: 400;
+  color: var(--chumbo); letter-spacing: 0.5px;
+}
+.dep-author-proj {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200; margin-top: 3px;
+}
+.dep-type {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--terra);
+  font-weight: 200; padding: 5px 12px;
+  border: 0.5px solid var(--terra);
+}
+.dep-controls {
+  display: flex; gap: 12px; padding: 32px 48px 0;
+  align-items: center;
+}
+.dep-btn {
+  width: 40px; height: 40px;
+  background: none; border: 0.5px solid var(--cinza2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s, border-color 0.3s;
+}
+.dep-btn:hover { background: var(--chumbo); border-color: var(--chumbo); }
+.dep-btn:hover svg path { stroke: var(--linho); }
+.dep-btn svg { width: 14px; height: 14px; }
+.dep-btn svg path { stroke: var(--chumbo); stroke-width: 1.5; fill: none; transition: stroke 0.3s; }
+.dep-count {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 2px;
+  color: var(--cinza); font-weight: 200;
+}
+
+/* ─── PARCERIA ─── */
+#parceria {
+  background: var(--chumbo);
+  padding: 120px 48px;
+}
+.parceria-header { margin-bottom: 72px; }
+.parceria-header .section-title { color: var(--linho); font-size: clamp(32px,4.5vw,56px); }
+.parceria-header .section-eyebrow { color: var(--terra); }
+.parceria-header .section-eyebrow::before { background: var(--terra); }
+.parceria-lead {
+  font-size: 16px; color: rgba(196,184,174,0.6);
+  font-weight: 300; line-height: 1.8;
+  max-width: 500px; margin-top: 24px;
+}
+.parceria-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.parceria-card {
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(196,184,174,0.1);
+  padding: 48px;
+  transition: background 0.3s, border-color 0.3s;
+}
+.parceria-card:hover {
+  background: rgba(196,113,74,0.08);
+  border-color: rgba(196,113,74,0.3);
+}
+.parceria-icon {
+  width: 40px; height: 40px;
+  border: 0.5px solid var(--terra);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+}
+.parceria-icon svg { width: 18px; height: 18px; }
+.parceria-card-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 26px;
+  color: var(--linho); line-height: 1.2;
+  margin-bottom: 20px;
+}
+.parceria-list {
+  list-style: none; display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 36px;
+}
+.parceria-list li {
+  font-size: 13px; color: rgba(196,184,174,0.5);
+  font-weight: 300; display: flex; align-items: center; gap: 12px;
+  line-height: 1.5;
+}
+.parceria-list li::before {
+  content: ''; width: 16px; height: 0.5px;
+  background: var(--terra); flex-shrink: 0;
+}
+.parceria-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--linho);
+  background: none; border: 0.5px solid rgba(196,184,174,0.2);
+  padding: 12px 24px; font-weight: 200;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+.parceria-btn:hover {
+  background: var(--terra); border-color: var(--terra);
+}
+.parceria-form-wrap {
+  margin-top: 64px; padding-top: 64px;
+  border-top: 0.5px solid rgba(196,184,174,0.1);
+}
+.parceria-form-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 22px;
+  color: var(--linho); margin-bottom: 32px;
+}
+.parceria-form {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.form-field {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.form-field.full { grid-column: 1 / -1; }
+.form-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(196,184,174,0.4);
+  font-weight: 200;
+}
+.form-input, .form-select, .form-textarea {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 14px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--linho);
+  font-weight: 300; outline: none;
+  transition: border-color 0.3s;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.form-select { cursor: none; }
+.form-select option { background: var(--chumbo); }
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--terra);
+}
+.form-input::placeholder, .form-textarea::placeholder {
+  color: rgba(196,184,174,0.25);
+}
+.form-textarea { resize: none; height: 100px; }
+.form-submit {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 28px;
+  background: var(--terra); border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--linho);
+  font-weight: 300; margin-top: 2px;
+  transition: background 0.3s;
+}
+.form-submit:hover { background: var(--terra2); }
+
+/* ─── CONTATO / FOOTER ─── */
+#footer {
+  background: var(--linho2);
+  padding: 64px 48px;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; align-items: start;
+  border-top: 0.5px solid rgba(196,184,174,0.4);
+}
+.footer-brand {}
+.footer-logo-name {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--chumbo); letter-spacing: -0.3px;
+}
+.footer-logo-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200; margin-top: 4px;
+}
+.footer-rule {
+  width: 40px; height: 0.5px;
+  background: var(--terra); margin: 20px 0;
+}
+.footer-tagline {
+  font-size: 13px; color: var(--cinza);
+  font-weight: 300; line-height: 1.7;
+  max-width: 240px;
+}
+.footer-col-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--chumbo);
+  font-weight: 400; margin-bottom: 20px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 12px; }
+.footer-links a {
+  font-size: 13px; color: var(--cinza);
+  font-weight: 300; transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--terra); }
+.footer-social { display: flex; gap: 12px; margin-top: 4px; }
+.footer-social a {
+  width: 36px; height: 36px;
+  border: 0.5px solid var(--cinza2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s, border-color 0.3s;
+}
+.footer-social a:hover { background: var(--chumbo); border-color: var(--chumbo); }
+.footer-social a:hover svg path { stroke: var(--linho); }
+.footer-social svg { width: 14px; height: 14px; }
+.footer-social svg path { stroke: var(--cinza); stroke-width: 1.5; fill: none; transition: stroke 0.3s; }
+.footer-bottom {
+  background: var(--chumbo);
+  padding: 18px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-copy {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 2px;
+  color: rgba(196,184,174,0.3); font-weight: 200;
+}
+.footer-admin-link {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 2px;
+  color: rgba(196,184,174,0.15); font-weight: 200;
+  transition: color 0.3s;
+}
+.footer-admin-link:hover { color: var(--terra); }
+
+/* ─── WHATSAPP FAB ─── */
+.whatsapp-fab {
+  position: fixed; bottom: 32px; right: 32px; z-index: 200;
+  width: 52px; height: 52px;
+  background: #25D366; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+  opacity: 0; animation: fadeUp 0.8s var(--ease) 2.5s forwards;
+}
+.whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
+.whatsapp-fab svg { width: 26px; height: 26px; fill: white; }
+
+/* ─── ADMIN ─── */
+#admin-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,28,28,0.95); z-index: 500;
+  overflow-y: auto;
+}
+#admin-overlay.open { display: block; }
+.admin-panel {
+  min-height: 100vh; padding: 40px 48px;
+  max-width: 1100px; margin: 0 auto;
+}
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 40px; padding-bottom: 20px;
+  border-bottom: 0.5px solid rgba(196,184,174,0.1);
+}
+.admin-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--linho);
+}
+.admin-close {
+  background: none; border: 0.5px solid rgba(196,184,174,0.2);
+  padding: 10px 20px;
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200; transition: border-color 0.3s, color 0.3s;
+}
+.admin-close:hover { border-color: var(--terra); color: var(--terra); }
+.admin-tabs {
+  display: flex; gap: 0; margin-bottom: 40px;
+  border-bottom: 0.5px solid rgba(196,184,174,0.1);
+}
+.admin-tab {
+  padding: 12px 24px; background: none; border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(196,184,174,0.3);
+  font-weight: 300; border-bottom: 1px solid transparent;
+  margin-bottom: -0.5px; transition: color 0.3s, border-color 0.3s;
+}
+.admin-tab.active { color: var(--terra); border-color: var(--terra); }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+.admin-form {
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(196,184,174,0.1);
+  padding: 32px; margin-bottom: 32px;
+}
+.admin-form-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 300; margin-bottom: 24px;
+}
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.admin-grid.full { grid-template-columns: 1fr; }
+.admin-field { display: flex; flex-direction: column; gap: 6px; }
+.admin-field.span2 { grid-column: 1 / -1; }
+.admin-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(196,184,174,0.4);
+  font-weight: 200;
+}
+.admin-input, .admin-select, .admin-textarea {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--linho);
+  font-weight: 300; outline: none;
+  transition: border-color 0.3s;
+  width: 100%;
+}
+.admin-select option { background: #2E2A26; }
+.admin-input:focus, .admin-select:focus, .admin-textarea:focus { border-color: var(--terra); }
+.admin-textarea { resize: none; height: 80px; }
+.admin-save {
+  padding: 12px 28px;
+  background: var(--terra); border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--linho);
+  font-weight: 300; margin-top: 20px;
+  transition: background 0.3s;
+}
+.admin-save:hover { background: var(--terra2); }
+.admin-list { display: flex; flex-direction: column; gap: 8px; }
+.admin-list-item {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 16px;
+  padding: 14px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(196,184,174,0.08);
+}
+.admin-list-info {}
+.admin-list-name {
+  font-size: 13px; color: var(--linho); font-weight: 300;
+}
+.admin-list-meta {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(196,184,174,0.3);
+  font-weight: 200; margin-top: 2px;
+}
+.admin-list-actions { display: flex; gap: 8px; }
+.admin-action-btn {
+  padding: 6px 14px; background: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 200;
+  transition: 0.3s;
+}
+.admin-action-btn.edit {
+  border: 0.5px solid rgba(196,184,174,0.2); color: var(--cinza);
+}
+.admin-action-btn.edit:hover { border-color: var(--terra); color: var(--terra); }
+.admin-action-btn.del {
+  border: 0.5px solid rgba(196,184,174,0.1); color: rgba(196,184,174,0.2);
+}
+.admin-action-btn.del:hover {
+  border-color: #c0392b; color: #c0392b; background: rgba(192,57,43,0.08);
+}
+.admin-login {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+}
+.admin-login-box {
+  width: 360px; padding: 48px;
+  border: 0.5px solid rgba(196,184,174,0.1);
+}
+.admin-login-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--linho); margin-bottom: 8px;
+}
+.admin-login-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(196,184,174,0.3);
+  font-weight: 200; margin-bottom: 32px;
+}
+.admin-login-error {
+  font-size: 12px; color: #c0392b; margin-top: 12px;
+  font-weight: 300; display: none;
+}
+.admin-login-error.show { display: block; }
+
+/* ─── MODAL PROJETO ─── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,28,28,0.92); z-index: 300;
+  align-items: center; justify-content: center;
+  padding: 48px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--linho); max-width: 960px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.modal-imgs { background: var(--chumbo2); position: relative; min-height: 400px; }
+.modal-img-main { width: 100%; height: 100%; object-fit: cover; }
+.modal-info { padding: 48px; display: flex; flex-direction: column; gap: 20px; }
+.modal-cat {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--terra);
+  font-weight: 200;
+}
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 32px;
+  color: var(--chumbo); line-height: 1.1;
+}
+.modal-rule { width: 40px; height: 0.5px; background: var(--terra); }
+.modal-desc { font-size: 14px; color: var(--cinza); line-height: 1.8; font-weight: 300; }
+.modal-close {
+  position: absolute; top: 24px; right: 24px; z-index: 10;
+  background: var(--chumbo); border: none;
+  width: 36px; height: 36px;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 20px;
+  color: var(--linho); display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  to { transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  section { padding: 80px 24px; }
+  #navbar { padding: 0 24px; }
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  #hero { padding: 0 24px 64px; }
+  #sobre { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+  .sobre-img { aspect-ratio: 3/2; order: -1; }
+  .portfolio-header { flex-direction: column; gap: 24px; align-items: flex-start; }
+  .portfolio-cats { grid-template-columns: 1fr 1fr; }
+  .cat-card:nth-child(2) { grid-row: auto; aspect-ratio: 4/5; }
+  .cat-card:nth-child(4) { grid-column: 1 / -1; }
+  .processo-grid { grid-template-columns: 1fr 1fr; }
+  .processo-item:nth-child(2) { border-right: none; }
+  .dep-card { min-width: calc(100% - 2px); }
+  .parceria-grid { grid-template-columns: 1fr; }
+  .parceria-form { grid-template-columns: 1fr; }
+  #footer { grid-template-columns: 1fr 1fr; padding: 48px 24px; }
+  .footer-bottom { padding: 18px 24px; flex-direction: column; gap: 8px; text-align: center; }
+  .admin-panel { padding: 24px; }
+  .admin-grid { grid-template-columns: 1fr; }
+  .modal-box { grid-template-columns: 1fr; }
+  .mobile-close { right: 24px; }
+}
+@media (max-width: 600px) {
+  .processo-grid { grid-template-columns: 1fr; }
+  .processo-item { border-right: none !important; border-bottom: 0.5px solid rgba(196,184,174,0.15); padding: 32px 0 !important; }
+  #footer { grid-template-columns: 1fr; }
+  .hero-scroll { display: none; }
+  .modal-overlay { padding: 0; }
+  .modal-box { max-height: 100vh; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/5500000000000" target="_blank" class="whatsapp-fab" title="Fale conosco no WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+</a>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">Fechar</button>
+  <a href="#sobre" onclick="closeMobile()">Sobre</a>
+  <a href="#portfolio" onclick="closeMobile()">Projetos</a>
+  <a href="#processo" onclick="closeMobile()">Processo</a>
+  <a href="#depoimentos" onclick="closeMobile()">Clientes</a>
+  <a href="#parceria" onclick="closeMobile()">Parceria</a>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-name">Briana Duranti</div>
+    <div class="nav-logo-sub">Arquitetura de Interiores</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#portfolio">Projetos</a></li>
+    <li><a href="#processo">Processo</a></li>
+    <li><a href="#depoimentos">Clientes</a></li>
+    <li><a href="#parceria">Parceria</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.querySelector('#parceria').scrollIntoView({behavior:'smooth'})">Orçamento</button>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=1920&q=80" alt="Interior design" loading="eager">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Arquitetura de Interiores</div>
+    <h1 class="hero-title">
+      <span class="line"><span>Espaços que</span></span>
+      <span class="line"><span>traduzem quem</span></span>
+      <span class="line"><span>você é.</span></span>
+    </h1>
+    <div class="hero-sub">
+      <div class="hero-sub-line"></div>
+      <span class="hero-sub-text">De lofts boutique a residências exclusivas</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-text">Scroll</div>
+    <div class="hero-scroll-bar"></div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="sobre-img reveal">
+    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80" alt="Briana Duranti Arquiteta">
+    <div class="sobre-img-caption">Briana Duranti — Arquiteta de Interiores</div>
+  </div>
+  <div class="sobre-text">
+    <div class="section-eyebrow reveal">Sobre</div>
+    <h2 class="section-title reveal delay-1">Cada projeto é<br><em>único como</em><br>seu dono.</h2>
+    <p class="sobre-lead reveal delay-2">Design de interiores que começa pela escuta — do cliente, do espaço, da luz.</p>
+    <p class="sobre-body reveal delay-3">Há mais de uma década, Briana Duranti transforma espaços em experiências. Do loft de 24 m² ao apartamento de 300 m², cada projeto nasce de uma conversa profunda sobre como você quer viver. Formada em Arquitetura, especialista em Design de Interiores, com portfólio que transita entre o minimalismo contemporâneo e o luxo atemporal.</p>
+    <div class="sobre-nums reveal delay-4">
+      <div class="sobre-num">
+        <div class="sobre-num-val">+80</div>
+        <div class="sobre-num-label">Projetos entregues</div>
+      </div>
+      <div class="sobre-num">
+        <div class="sobre-num-val">12</div>
+        <div class="sobre-num-label">Anos de experiência</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFÓLIO -->
+<section id="portfolio">
+  <div class="portfolio-header">
+    <div>
+      <div class="section-eyebrow reveal">Portfólio</div>
+      <h2 class="section-title reveal delay-1">Projetos por<br><em>categoria</em></h2>
+    </div>
+  </div>
+  <div class="portfolio-cats reveal delay-2" id="portfolioCats">
+
+    <div class="cat-card" data-cat="lofts" style="cursor:none">
+      <div class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80" alt="Lofts">
+      </div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-tag">24 — 40 m²</div>
+        <div class="cat-title">Lofts<br>Boutique</div>
+        <div class="cat-cta">
+          <div class="cat-cta-line"></div>
+          <span class="cat-cta-text">Ver projetos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-card" data-cat="aptos" style="cursor:none">
+      <div class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&q=80" alt="Apartamentos">
+      </div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-tag">50 — 150 m²</div>
+        <div class="cat-title">Apartamentos<br>Residenciais</div>
+        <div class="cat-cta">
+          <div class="cat-cta-line"></div>
+          <span class="cat-cta-text">Ver projetos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-card" data-cat="grandes" style="cursor:none">
+      <div class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" alt="Acima de 150m²">
+      </div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-tag">Acima de 150 m²</div>
+        <div class="cat-title">Casas &<br>Grandes Aptos</div>
+        <div class="cat-cta">
+          <div class="cat-cta-line"></div>
+          <span class="cat-cta-text">Ver projetos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-card" data-cat="exclusivos" style="cursor:none">
+      <div class="cat-bg">
+        <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80" alt="Ambientes Exclusivos">
+      </div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-tag">Alta Exclusividade</div>
+        <div class="cat-title">Ambientes<br>Exclusivos</div>
+        <div class="cat-cta">
+          <div class="cat-cta-line"></div>
+          <span class="cat-cta-text">Ver projetos</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESSO -->
+<section id="processo">
+  <div class="processo-header">
+    <div class="section-eyebrow reveal">Como trabalhamos</div>
+    <h2 class="section-title reveal delay-1">Do conceito à<br><em>entrega final</em></h2>
+  </div>
+  <div class="processo-grid">
+    <div class="processo-item reveal">
+      <div class="processo-num">01</div>
+      <div class="processo-title">Escuta & briefing</div>
+      <div class="processo-text">Uma conversa profunda sobre como você vive, o que te incomoda no espaço atual e como você imagina seu novo ambiente. Nada é assumido.</div>
+    </div>
+    <div class="processo-item reveal delay-1">
+      <div class="processo-num">02</div>
+      <div class="processo-title">Conceito & moodboard</div>
+      <div class="processo-text">Desenvolvemos a identidade visual do espaço antes de qualquer execução — paleta, materiais, mobiliário, iluminação. Você aprova cada detalhe.</div>
+    </div>
+    <div class="processo-item reveal delay-2">
+      <div class="processo-num">03</div>
+      <div class="processo-title">Projeto técnico</div>
+      <div class="processo-text">Plantas, cortes, detalhamentos e especificações completas. Um arquivo que qualquer profissional consegue executar com precisão.</div>
+    </div>
+    <div class="processo-item reveal delay-3">
+      <div class="processo-num">04</div>
+      <div class="processo-title">Acompanhamento & entrega</div>
+      <div class="processo-text">Presença em obra, gestão de fornecedores e vistorias regulares até o dia em que você recebe as chaves do seu novo espaço.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="dep-header">
+    <div class="section-eyebrow reveal">Clientes</div>
+    <h2 class="section-title reveal delay-1">O que dizem<br><em>sobre o trabalho</em></h2>
+  </div>
+  <div class="dep-track-wrap">
+    <div class="dep-track" id="depTrack">
+      <div class="dep-card">
+        <div>
+          <div class="dep-quote-mark">"</div>
+          <div class="dep-text">A Briana transformou nosso apartamento de 80 m² num espaço que parece maior e muito mais nosso. Ela entendeu nossa rotina antes de propor qualquer solução. O resultado superou tudo que imaginamos.</div>
+        </div>
+        <div class="dep-footer">
+          <div>
+            <div class="dep-author-name">Fernanda & Rodrigo M.</div>
+            <div class="dep-author-proj">Apartamento 82 m² — Moema, SP</div>
+          </div>
+          <div class="dep-type">Residencial</div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div>
+          <div class="dep-quote-mark">"</div>
+          <div class="dep-text">Meu loft de 32 m² virou o apê mais visitado pelos meus amigos. Cada centímetro foi pensado. Briana tem um talento raro para fazer o pequeno parecer generoso e o simples parecer sofisticado.</div>
+        </div>
+        <div class="dep-footer">
+          <div>
+            <div class="dep-author-name">Lucas Andrade</div>
+            <div class="dep-author-proj">Loft 32 m² — Pinheiros, SP</div>
+          </div>
+          <div class="dep-type">Loft</div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div>
+          <div class="dep-quote-mark">"</div>
+          <div class="dep-text">Nossa casa de 280 m² foi um projeto de dois anos. A Briana esteve presente em cada fase, antecipou problemas que nem imaginávamos e entregou exatamente o que prometeu — dentro do prazo.</div>
+        </div>
+        <div class="dep-footer">
+          <div>
+            <div class="dep-author-name">Família Costa</div>
+            <div class="dep-author-proj">Residência 280 m² — Alphaville, SP</div>
+          </div>
+          <div class="dep-type">Alto Padrão</div>
+        </div>
+      </div>
+      <div class="dep-card">
+        <div>
+          <div class="dep-quote-mark">"</div>
+          <div class="dep-text">Trabalhar com a Briana foi uma experiência diferente de tudo que já vi no mercado. Ela não vende um estilo — ela revela o seu. E o resultado é um ambiente que só poderia ser nosso.</div>
+        </div>
+        <div class="dep-footer">
+          <div>
+            <div class="dep-author-name">Ana Paula Vieira</div>
+            <div class="dep-author-proj">Penthouse 210 m² — Itaim Bibi, SP</div>
+          </div>
+          <div class="dep-type">Exclusivo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dep-controls">
+    <button class="dep-btn" id="depPrev" aria-label="Anterior">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="dep-btn" id="depNext" aria-label="Próximo">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <span class="dep-count" id="depCount">01 / 04</span>
+  </div>
+</section>
+
+<!-- PARCERIA -->
+<section id="parceria">
+  <div class="parceria-header">
+    <div class="section-eyebrow reveal">Parcerias</div>
+    <h2 class="section-title reveal delay-1">Vamos construir<br><em>juntos.</em></h2>
+    <p class="parceria-lead reveal delay-2">Se você é arquiteto ou corretor e quer oferecer uma experiência de interiores de alto nível aos seus clientes, vamos conversar.</p>
+  </div>
+  <div class="parceria-grid reveal delay-3">
+    <div class="parceria-card">
+      <div class="parceria-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C4714A" stroke-width="1.5" stroke-linecap="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
+        </svg>
+      </div>
+      <div class="parceria-card-title">Para<br>Arquitetos</div>
+      <ul class="parceria-list">
+        <li>Parceria em projetos de interiores complementares</li>
+        <li>Co-criação de conceito e apresentação ao cliente</li>
+        <li>Gestão integrada de fornecedores e execução</li>
+      </ul>
+      <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
+        Propor parceria
+      </button>
+    </div>
+    <div class="parceria-card">
+      <div class="parceria-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C4714A" stroke-width="1.5" stroke-linecap="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      </div>
+      <div class="parceria-card-title">Para<br>Corretores</div>
+      <ul class="parceria-list">
+        <li>Home staging para imóveis de alto padrão</li>
+        <li>Projeto de interiores como diferencial de venda</li>
+        <li>Comissão sobre projetos indicados</li>
+      </ul>
+      <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
+        Indicar cliente
+      </button>
+    </div>
+  </div>
+
+  <div class="parceria-form-wrap reveal">
+    <div class="parceria-form-title">Envie uma mensagem</div>
+    <form class="parceria-form" id="contatoForm" onsubmit="submitForm(event)">
+      <div class="form-field">
+        <label class="form-label">Nome</label>
+        <input class="form-input" type="text" placeholder="Seu nome completo" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">E-mail</label>
+        <input class="form-input" type="email" placeholder="seu@email.com" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Telefone / WhatsApp</label>
+        <input class="form-input" type="tel" placeholder="(00) 00000-0000">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Tipo de contato</label>
+        <select class="form-select">
+          <option value="">Selecione</option>
+          <option>Orçamento de projeto</option>
+          <option>Parceria — Arquiteto</option>
+          <option>Parceria — Corretor</option>
+          <option>Outros</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Mensagem</label>
+        <textarea class="form-textarea" placeholder="Conte sobre seu projeto ou proposta..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">
+        <span>Enviar mensagem</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-brand">
+    <div class="footer-logo-name">Briana Duranti</div>
+    <div class="footer-logo-sub">Arquitetura de Interiores</div>
+    <div class="footer-rule"></div>
+    <div class="footer-tagline">Espaços que traduzem a personalidade de quem os habita.</div>
+    <div class="footer-social" style="margin-top:24px">
+      <a href="#" title="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+      <a href="#" title="Pinterest">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.64 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.772 0 3.137-1.867 3.137-4.562 0-2.387-1.715-4.054-4.163-4.054-2.837 0-4.5 2.128-4.5 4.328 0 .857.33 1.776.742 2.279a.3.3 0 01.069.284c-.076.312-.244.995-.277 1.134-.044.183-.146.222-.337.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.966-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+      </a>
+      <a href="https://wa.me/5500000000000" title="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-title">Navegação</div>
+    <div class="footer-links">
+      <a href="#sobre">Sobre</a>
+      <a href="#portfolio">Projetos</a>
+      <a href="#processo">Processo</a>
+      <a href="#depoimentos">Clientes</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-title">Portfólio</div>
+    <div class="footer-links">
+      <a href="#portfolio">Lofts 24–40 m²</a>
+      <a href="#portfolio">Aptos 50–150 m²</a>
+      <a href="#portfolio">Acima de 150 m²</a>
+      <a href="#portfolio">Exclusivos</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-title">Contato</div>
+    <div class="footer-links">
+      <a href="mailto:contato@brianaduranti.com.br">contato@brianaduranti.com.br</a>
+      <a href="https://wa.me/5500000000000">WhatsApp</a>
+      <a href="#parceria">Parcerias</a>
+    </div>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span class="footer-copy">© 2025 Briana Duranti. Todos os direitos reservados.</span>
+  <a href="#" class="footer-admin-link" onclick="openAdmin(event)">Admin</a>
+</div>
+
+<!-- MODAL PROJETO -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <div class="modal-imgs">
+      <img class="modal-img-main" id="modalImg" src="" alt="">
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-info">
+      <div class="modal-cat" id="modalCat"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-rule"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div id="admin-overlay">
+  <!-- Login -->
+  <div class="admin-login" id="adminLogin">
+    <div class="admin-login-box">
+      <div class="admin-login-title">Painel Admin</div>
+      <div class="admin-login-sub">Briana Duranti Studio</div>
+      <div class="form-field" style="margin-bottom:12px">
+        <label class="admin-label" style="color:rgba(196,184,174,0.4)">Senha</label>
+        <input class="admin-input" type="password" id="adminPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkLogin()">
+      </div>
+      <button class="admin-save" onclick="checkLogin()">Entrar</button>
+      <div class="admin-login-error" id="loginError">Senha incorreta.</div>
+    </div>
+  </div>
+
+  <!-- Panel -->
+  <div class="admin-panel" id="adminPanel" style="display:none">
+    <div class="admin-header">
+      <div class="admin-title">Painel Admin</div>
+      <button class="admin-close" onclick="closeAdmin()">Fechar ×</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('projetos',this)">Projetos</button>
+      <button class="admin-tab" onclick="switchTab('depoimentos',this)">Depoimentos</button>
+      <button class="admin-tab" onclick="switchTab('parcerias',this)">Parcerias</button>
+    </div>
+
+    <!-- Projetos -->
+    <div class="admin-section active" id="tab-projetos">
+      <div class="admin-form">
+        <div class="admin-form-title">Adicionar / Editar Projeto</div>
+        <div class="admin-grid">
+          <div class="admin-field">
+            <label class="admin-label">Título do projeto</label>
+            <input class="admin-input" id="pTitulo" placeholder="Ex: Loft Jardins">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Categoria</label>
+            <select class="admin-select" id="pCat">
+              <option value="lofts">Lofts 24–40 m²</option>
+              <option value="aptos">Aptos 50–150 m²</option>
+              <option value="grandes">Acima de 150 m²</option>
+              <option value="exclusivos">Ambientes Exclusivos</option>
+            </select>
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">URL da imagem</label>
+            <input class="admin-input" id="pImg" placeholder="https://...">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Área (m²)</label>
+            <input class="admin-input" id="pArea" placeholder="Ex: 78 m²">
+          </div>
+          <div class="admin-field span2">
+            <label class="admin-label">Descrição</label>
+            <textarea class="admin-textarea" id="pDesc" placeholder="Descreva o projeto..."></textarea>
+          </div>
+        </div>
+        <button class="admin-save" onclick="saveProject()">Salvar Projeto</button>
+      </div>
+      <div class="admin-list" id="projectList"></div>
+    </div>
+
+    <!-- Depoimentos -->
+    <div class="admin-section" id="tab-depoimentos">
+      <div class="admin-form">
+        <div class="admin-form-title">Adicionar Depoimento</div>
+        <div class="admin-grid">
+          <div class="admin-field">
+            <label class="admin-label">Nome do cliente</label>
+            <input class="admin-input" id="dNome" placeholder="Nome completo">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Projeto</label>
+            <input class="admin-input" id="dProjeto" placeholder="Ex: Apartamento 82 m², SP">
+          </div>
+          <div class="admin-field span2">
+            <label class="admin-label">Depoimento</label>
+            <textarea class="admin-textarea" id="dTexto" placeholder="O que o cliente disse..."></textarea>
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Tipo</label>
+            <select class="admin-select" id="dTipo">
+              <option>Loft</option>
+              <option>Residencial</option>
+              <option>Alto Padrão</option>
+              <option>Exclusivo</option>
+            </select>
+          </div>
+        </div>
+        <button class="admin-save" onclick="saveDepoimento()">Salvar Depoimento</button>
+      </div>
+      <div class="admin-list" id="depList"></div>
+    </div>
+
+    <!-- Parcerias -->
+    <div class="admin-section" id="tab-parcerias">
+      <div class="admin-form-title" style="color:var(--cinza);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:300;margin-bottom:20px">Solicitações recebidas</div>
+      <div class="admin-list" id="parcList">
+        <div class="admin-list-item">
+          <div class="admin-list-info">
+            <div class="admin-list-name">Formulário de parceria ativo</div>
+            <div class="admin-list-meta">As solicitações do formulário aparecerão aqui</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a, button, .cat-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+});
+
+// ─── NAVBAR SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ─── MOBILE MENU ───
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+});
+document.getElementById('mobileClose').addEventListener('click', closeMobile);
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ─── REVEAL ON SCROLL ───
+const reveals = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(el => revObs.observe(el));
+
+// ─── DEPOIMENTOS CAROUSEL ───
+let depIdx = 0;
+const depCards = document.querySelectorAll('.dep-card');
+const total = depCards.length;
+function updateDep() {
+  const isMobile = window.innerWidth <= 900;
+  const w = isMobile ? 100 : 50;
+  document.getElementById('depTrack').style.transform = `translateX(-${depIdx * w}%)`;
+  document.getElementById('depCount').textContent =
+    String(depIdx + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+}
+document.getElementById('depNext').addEventListener('click', () => {
+  depIdx = (depIdx + 1) % total; updateDep();
+});
+document.getElementById('depPrev').addEventListener('click', () => {
+  depIdx = (depIdx - 1 + total) % total; updateDep();
+});
+
+// ─── PORTFOLIO MODAL ───
+const catData = {
+  lofts: {
+    title: 'Lofts Boutique',
+    tag: 'Lofts · 24 — 40 m²',
+    img: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&q=80',
+    desc: 'Projetos de lofts compactos onde cada centímetro é pensado para ampliar a sensação de espaço sem abrir mão do conforto e da personalidade. Soluções de mobiliário integrado, iluminação estratégica e paletas que fazem o espaço respirar.'
+  },
+  aptos: {
+    title: 'Apartamentos Residenciais',
+    tag: 'Apartamentos · 50 — 150 m²',
+    img: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=1200&q=80',
+    desc: 'A faixa mais versátil do portfólio. Apartamentos que equilibram funcionalidade para o dia a dia com a sofisticação que o cliente deseja. Da planta livre ao layout compartimentado, cada projeto nasce do modo de vida de quem habita.'
+  },
+  grandes: {
+    title: 'Casas & Grandes Apartamentos',
+    tag: 'Acima de 150 m²',
+    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=1200&q=80',
+    desc: 'Projetos de grande porte que exigem orquestração de múltiplos ambientes, gestão de fornecedores especializados e atenção milimétrica a cada detalhe. Residências que são patrimônio — projetadas para durar gerações.'
+  },
+  exclusivos: {
+    title: 'Ambientes Exclusivos',
+    tag: 'Alta Exclusividade',
+    img: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80',
+    desc: 'Para clientes que buscam o que não existe pronto. Materiais especiais, peças únicas, soluções sob medida em cada detalhe. Projetos onde o processo é tão importante quanto o resultado — uma experiência de criação compartilhada.'
+  }
+};
+document.querySelectorAll('.cat-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const cat = card.dataset.cat;
+    const d = catData[cat];
+    document.getElementById('modalImg').src = d.img;
+    document.getElementById('modalCat').textContent = d.tag;
+    document.getElementById('modalTitle').textContent = d.title;
+    document.getElementById('modalDesc').textContent = d.desc;
+    document.getElementById('projectModal').classList.add('open');
+  });
+});
+function closeModal() {
+  document.getElementById('projectModal').classList.remove('open');
+}
+document.getElementById('projectModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ─── FORM ───
+function submitForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.form-submit span');
+  btn.textContent = 'Mensagem enviada ✓';
+  setTimeout(() => { btn.textContent = 'Enviar mensagem'; }, 3000);
+}
+
+// ─── ADMIN ───
+let adminLoggedIn = false;
+const ADMIN_PWD = 'briana2025';
+
+function openAdmin(e) {
+  e.preventDefault();
+  document.getElementById('admin-overlay').classList.add('open');
+  if (adminLoggedIn) {
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+  }
+  renderProjectList();
+  renderDepList();
+}
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('open');
+}
+function checkLogin() {
+  const pwd = document.getElementById('adminPwd').value;
+  if (pwd === ADMIN_PWD) {
+    adminLoggedIn = true;
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    renderProjectList();
+    renderDepList();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    setTimeout(() => document.getElementById('loginError').classList.remove('show'), 2500);
+  }
+}
+function switchTab(name, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ─── PROJECTS CRUD ───
+let projects = JSON.parse(localStorage.getItem('bd_projects') || '[]');
+let depoimentos = JSON.parse(localStorage.getItem('bd_depoimentos') || '[]');
+
+function saveProject() {
+  const p = {
+    id: Date.now(),
+    titulo: document.getElementById('pTitulo').value,
+    cat: document.getElementById('pCat').value,
+    img: document.getElementById('pImg').value,
+    area: document.getElementById('pArea').value,
+    desc: document.getElementById('pDesc').value
+  };
+  if (!p.titulo) return;
+  projects.push(p);
+  localStorage.setItem('bd_projects', JSON.stringify(projects));
+  ['pTitulo','pImg','pArea','pDesc'].forEach(id => document.getElementById(id).value = '');
+  renderProjectList();
+}
+function deleteProject(id) {
+  if (!confirm('Remover este projeto?')) return;
+  projects = projects.filter(p => p.id !== id);
+  localStorage.setItem('bd_projects', JSON.stringify(projects));
+  renderProjectList();
+}
+function renderProjectList() {
+  const list = document.getElementById('projectList');
+  if (!list) return;
+  if (!projects.length) {
+    list.innerHTML = '<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0;font-family:\'DM Sans\',sans-serif;font-weight:300">Nenhum projeto cadastrado.</div>';
+    return;
+  }
+  list.innerHTML = projects.map(p => `
+    <div class="admin-list-item">
+      <div class="admin-list-info">
+        <div class="admin-list-name">${p.titulo}</div>
+        <div class="admin-list-meta">${p.cat} · ${p.area}</div>
+      </div>
+      <div class="admin-list-actions">
+        <button class="admin-action-btn del" onclick="deleteProject(${p.id})">Remover</button>
+      </div>
+    </div>
+  `).join('');
+}
+function saveDepoimento() {
+  const d = {
+    id: Date.now(),
+    nome: document.getElementById('dNome').value,
+    projeto: document.getElementById('dProjeto').value,
+    texto: document.getElementById('dTexto').value,
+    tipo: document.getElementById('dTipo').value
+  };
+  if (!d.nome) return;
+  depoimentos.push(d);
+  localStorage.setItem('bd_depoimentos', JSON.stringify(depoimentos));
+  ['dNome','dProjeto','dTexto'].forEach(id => document.getElementById(id).value = '');
+  renderDepList();
+}
+function deleteDepoimento(id) {
+  if (!confirm('Remover este depoimento?')) return;
+  depoimentos = depoimentos.filter(d => d.id !== id);
+  localStorage.setItem('bd_depoimentos', JSON.stringify(depoimentos));
+  renderDepList();
+}
+function renderDepList() {
+  const list = document.getElementById('depList');
+  if (!list) return;
+  if (!depoimentos.length) {
+    list.innerHTML = '<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0;font-family:\'DM Sans\',sans-serif;font-weight:300">Nenhum depoimento cadastrado.</div>';
+    return;
+  }
+  list.innerHTML = depoimentos.map(d => `
+    <div class="admin-list-item">
+      <div class="admin-list-info">
+        <div class="admin-list-name">${d.nome}</div>
+        <div class="admin-list-meta">${d.projeto} · ${d.tipo}</div>
+      </div>
+      <div class="admin-list-actions">
+        <button class="admin-action-btn del" onclick="deleteDepoimento(${d.id})">Remover</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── TOUCH SWIPE depoimentos ───
+let touchX = 0;
+document.querySelector('.dep-track-wrap').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+document.querySelector('.dep-track-wrap').addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) { depIdx = (depIdx + 1) % total; }
+    else { depIdx = (depIdx - 1 + total) % total; }
+    updateDep();
+  }
+});
+</script>
+</body>
+</html>
