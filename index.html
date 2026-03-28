@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Briana Duranti â Arquitetura de Interiores</title>
+<title>Briana Duranti Ã¢ÂÂ Arquitetura de Interiores</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@100;200;300;400;500&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-/* âââ RESET & BASE âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ RESET & BASE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --linho: #F5F1EC;
@@ -35,7 +35,7 @@ a { text-decoration: none; color: inherit; }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
 button { font-family: inherit; cursor: none; }
 
-/* âââ CUSTOM CURSOR âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CUSTOM CURSOR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 .cursor {
   width: 8px; height: 8px;
   background: var(--chumbo);
@@ -58,7 +58,7 @@ button { font-family: inherit; cursor: none; }
   opacity: 0.4;
 }
 
-/* âââ NAVBAR âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ NAVBAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #navbar {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -132,10 +132,10 @@ button { font-family: inherit; cursor: none; }
   transition: transform 0.3s, opacity 0.3s;
 }
 
-/* âââ MOBILE MENU âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MOBILE MENU Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 .mobile-menu {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--chumbo); z-index: 99;
+  background: var(--chumbo); z-index: 200;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: 32px;
@@ -151,15 +151,16 @@ button { font-family: inherit; cursor: none; }
 }
 .mobile-menu a:hover { color: var(--terra); }
 .mobile-close {
-  position: absolute; top: 24px; right: 48px;
+  position: fixed; top: 24px; right: 48px;
   background: none; border: none;
   font-family: 'Jost', sans-serif;
   font-size: 9px; letter-spacing: 3px;
   text-transform: uppercase; color: var(--cinza);
   font-weight: 200;
+  z-index: 201;
 }
 
-/* âââ HERO âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #hero {
   height: 100vh; min-height: 600px;
   position: relative; overflow: hidden;
@@ -245,7 +246,7 @@ button { font-family: inherit; cursor: none; }
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* âââ SECTIONS BASE âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTIONS BASE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 section { padding: 120px 48px; }
 .reveal {
   opacity: 0; transform: translateY(40px);
@@ -274,7 +275,7 @@ section { padding: 120px 48px; }
   letter-spacing: -1px;
 }
 
-/* âââ SOBRE âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SOBRE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #sobre {
   background: var(--branco);
   display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
@@ -321,7 +322,7 @@ section { padding: 120px 48px; }
   font-weight: 200; margin-top: 4px;
 }
 
-/* âââ PORTFÃLIO âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PORTFÃÂLIO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #portfolio { background: var(--linho); padding-bottom: 80px; }
 .portfolio-header {
   display: flex; justify-content: space-between; align-items: flex-end;
@@ -384,7 +385,7 @@ section { padding: 120px 48px; }
 }
 .cat-cta-line { width: 24px; height: 0.5px; background: var(--terra); }
 
-/* âââ PROCESSO âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PROCESSO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #processo {
   background: var(--chumbo);
   padding: 120px 48px;
@@ -421,7 +422,7 @@ section { padding: 120px 48px; }
   line-height: 1.8; font-weight: 300;
 }
 
-/* âââ DEPOIMENTOS âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ DEPOIMENTOS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #depoimentos {
   background: var(--branco);
   padding: 120px 0;
@@ -495,7 +496,7 @@ section { padding: 120px 48px; }
   color: var(--cinza); font-weight: 200;
 }
 
-/* âââ PARCERIA âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PARCERIA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #parceria {
   background: var(--chumbo);
   padding: 120px 48px;
@@ -613,7 +614,7 @@ section { padding: 120px 48px; }
 }
 .form-submit:hover { background: var(--terra2); }
 
-/* âââ CONTATO / FOOTER âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CONTATO / FOOTER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #footer {
   background: var(--linho2);
   padding: 64px 48px;
@@ -683,7 +684,7 @@ section { padding: 120px 48px; }
 }
 .footer-admin-link:hover { color: var(--terra); }
 
-/* âââ WHATSAPP FAB âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ WHATSAPP FAB Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 .whatsapp-fab {
   position: fixed; bottom: 32px; right: 32px; z-index: 200;
   width: 52px; height: 52px;
@@ -696,7 +697,7 @@ section { padding: 120px 48px; }
 .whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
 .whatsapp-fab svg { width: 26px; height: 26px; fill: white; }
 
-/* âââ ADMIN âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ADMIN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 #admin-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(28,28,28,0.95); z-index: 500;
@@ -845,7 +846,7 @@ section { padding: 120px 48px; }
 }
 .admin-login-error.show { display: block; }
 
-/* âââ MODAL PROJETO âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MODAL PROJETO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(28,28,28,0.92); z-index: 300;
@@ -883,7 +884,7 @@ section { padding: 120px 48px; }
   color: var(--linho); display: flex; align-items: center; justify-content: center;
 }
 
-/* âââ ANIMATIONS âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ANIMATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
 }
@@ -894,7 +895,7 @@ section { padding: 120px 48px; }
   to { transform: translateY(0); }
 }
 
-/* âââ RESPONSIVE âââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ RESPONSIVE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 @media (max-width: 900px) {
   section { padding: 80px 24px; }
   #navbar { padding: 0 24px; }
@@ -917,7 +918,7 @@ section { padding: 120px 48px; }
   .admin-panel { padding: 24px; }
   .admin-grid { grid-template-columns: 1fr; }
   .modal-box { grid-template-columns: 1fr; }
-  .mobile-close { right: 24px; }
+  .mobile-close { right: 24px; top: 20px; }
 }
 @media (max-width: 600px) {
   .processo-grid { grid-template-columns: 1fr; }
@@ -963,7 +964,7 @@ section { padding: 120px 48px; }
     <li><a href="#depoimentos">Clientes</a></li>
     <li><a href="#parceria">Parceria</a></li>
   </ul>
-  <button class="nav-cta" onclick="document.querySelector('#parceria').scrollIntoView({behavior:'smooth'})">OrÃ§amento</button>
+  <button class="nav-cta" onclick="document.querySelector('#parceria').scrollIntoView({behavior:'smooth'})">OrÃÂ§amento</button>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -978,13 +979,13 @@ section { padding: 120px 48px; }
   <div class="hero-content">
     <div class="hero-tag">Arquitetura de Interiores</div>
     <h1 class="hero-title">
-      <span class="line"><span>EspaÃ§os que</span></span>
+      <span class="line"><span>EspaÃÂ§os que</span></span>
       <span class="line"><span>traduzem quem</span></span>
-      <span class="line"><span>vocÃª Ã©.</span></span>
+      <span class="line"><span>vocÃÂª ÃÂ©.</span></span>
     </h1>
     <div class="hero-sub">
       <div class="hero-sub-line"></div>
-      <span class="hero-sub-text">De lofts boutique a residÃªncias exclusivas</span>
+      <span class="hero-sub-text">De lofts boutique a residÃÂªncias exclusivas</span>
     </div>
   </div>
   <div class="hero-scroll">
@@ -997,13 +998,13 @@ section { padding: 120px 48px; }
 <section id="sobre">
   <div class="sobre-img reveal">
     <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80" alt="Briana Duranti Arquiteta">
-    <div class="sobre-img-caption">Briana Duranti â Arquiteta de Interiores</div>
+    <div class="sobre-img-caption">Briana Duranti Ã¢ÂÂ Arquiteta de Interiores</div>
   </div>
   <div class="sobre-text">
     <div class="section-eyebrow reveal">Sobre</div>
-    <h2 class="section-title reveal delay-1">Cada projeto Ã©<br><em>Ãºnico como</em><br>seu dono.</h2>
-    <p class="sobre-lead reveal delay-2">Design de interiores que comeÃ§a pela escuta â do cliente, do espaÃ§o, da luz.</p>
-    <p class="sobre-body reveal delay-3">HÃ¡ mais de uma dÃ©cada, Briana Duranti transforma espaÃ§os em experiÃªncias. Do loft de 24 mÂ² ao apartamento de 300 mÂ², cada projeto nasce de uma conversa profunda sobre como vocÃª quer viver. Formada em Arquitetura, especialista em Design de Interiores, com portfÃ³lio que transita entre o minimalismo contemporÃ¢neo e o luxo atemporal.</p>
+    <h2 class="section-title reveal delay-1">Cada projeto ÃÂ©<br><em>ÃÂºnico como</em><br>seu dono.</h2>
+    <p class="sobre-lead reveal delay-2">Design de interiores que comeÃÂ§a pela escuta Ã¢ÂÂ do cliente, do espaÃÂ§o, da luz.</p>
+    <p class="sobre-body reveal delay-3">HÃÂ¡ mais de uma dÃÂ©cada, Briana Duranti transforma espaÃÂ§os em experiÃÂªncias. Do loft de 24 mÃÂ² ao apartamento de 300 mÃÂ², cada projeto nasce de uma conversa profunda sobre como vocÃÂª quer viver. Formada em Arquitetura, especialista em Design de Interiores, com portfÃÂ³lio que transita entre o minimalismo contemporÃÂ¢neo e o luxo atemporal.</p>
     <div class="sobre-nums reveal delay-4">
       <div class="sobre-num">
         <div class="sobre-num-val">+80</div>
@@ -1011,17 +1012,17 @@ section { padding: 120px 48px; }
       </div>
       <div class="sobre-num">
         <div class="sobre-num-val">12</div>
-        <div class="sobre-num-label">Anos de experiÃªncia</div>
+        <div class="sobre-num-label">Anos de experiÃÂªncia</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PORTFÃLIO -->
+<!-- PORTFÃÂLIO -->
 <section id="portfolio">
   <div class="portfolio-header">
     <div>
-      <div class="section-eyebrow reveal">PortfÃ³lio</div>
+      <div class="section-eyebrow reveal">PortfÃÂ³lio</div>
       <h2 class="section-title reveal delay-1">Projetos por<br><em>categoria</em></h2>
     </div>
   </div>
@@ -1033,7 +1034,7 @@ section { padding: 120px 48px; }
       </div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
-        <div class="cat-tag">24 â 40 mÂ²</div>
+        <div class="cat-tag">24 Ã¢ÂÂ 40 mÃÂ²</div>
         <div class="cat-title">Lofts<br>Boutique</div>
         <div class="cat-cta">
           <div class="cat-cta-line"></div>
@@ -1048,7 +1049,7 @@ section { padding: 120px 48px; }
       </div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
-        <div class="cat-tag">50 â 150 mÂ²</div>
+        <div class="cat-tag">50 Ã¢ÂÂ 150 mÃÂ²</div>
         <div class="cat-title">Apartamentos<br>Residenciais</div>
         <div class="cat-cta">
           <div class="cat-cta-line"></div>
@@ -1059,11 +1060,11 @@ section { padding: 120px 48px; }
 
     <div class="cat-card" data-cat="grandes" style="cursor:none">
       <div class="cat-bg">
-        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" alt="Acima de 150mÂ²">
+        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" alt="Acima de 150mÃÂ²">
       </div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
-        <div class="cat-tag">Acima de 150 mÂ²</div>
+        <div class="cat-tag">Acima de 150 mÃÂ²</div>
         <div class="cat-title">Casas &<br>Grandes Aptos</div>
         <div class="cat-cta">
           <div class="cat-cta-line"></div>
@@ -1094,28 +1095,28 @@ section { padding: 120px 48px; }
 <section id="processo">
   <div class="processo-header">
     <div class="section-eyebrow reveal">Como trabalhamos</div>
-    <h2 class="section-title reveal delay-1">Do conceito Ã <br><em>entrega final</em></h2>
+    <h2 class="section-title reveal delay-1">Do conceito ÃÂ <br><em>entrega final</em></h2>
   </div>
   <div class="processo-grid">
     <div class="processo-item reveal">
       <div class="processo-num">01</div>
       <div class="processo-title">Escuta & briefing</div>
-      <div class="processo-text">Uma conversa profunda sobre como vocÃª vive, o que te incomoda no espaÃ§o atual e como vocÃª imagina seu novo ambiente. Nada Ã© assumido.</div>
+      <div class="processo-text">Uma conversa profunda sobre como vocÃÂª vive, o que te incomoda no espaÃÂ§o atual e como vocÃÂª imagina seu novo ambiente. Nada ÃÂ© assumido.</div>
     </div>
     <div class="processo-item reveal delay-1">
       <div class="processo-num">02</div>
       <div class="processo-title">Conceito & moodboard</div>
-      <div class="processo-text">Desenvolvemos a identidade visual do espaÃ§o antes de qualquer execuÃ§Ã£o â paleta, materiais, mobiliÃ¡rio, iluminaÃ§Ã£o. VocÃª aprova cada detalhe.</div>
+      <div class="processo-text">Desenvolvemos a identidade visual do espaÃÂ§o antes de qualquer execuÃÂ§ÃÂ£o Ã¢ÂÂ paleta, materiais, mobiliÃÂ¡rio, iluminaÃÂ§ÃÂ£o. VocÃÂª aprova cada detalhe.</div>
     </div>
     <div class="processo-item reveal delay-2">
       <div class="processo-num">03</div>
-      <div class="processo-title">Projeto tÃ©cnico</div>
-      <div class="processo-text">Plantas, cortes, detalhamentos e especificaÃ§Ãµes completas. Um arquivo que qualquer profissional consegue executar com precisÃ£o.</div>
+      <div class="processo-title">Projeto tÃÂ©cnico</div>
+      <div class="processo-text">Plantas, cortes, detalhamentos e especificaÃÂ§ÃÂµes completas. Um arquivo que qualquer profissional consegue executar com precisÃÂ£o.</div>
     </div>
     <div class="processo-item reveal delay-3">
       <div class="processo-num">04</div>
       <div class="processo-title">Acompanhamento & entrega</div>
-      <div class="processo-text">PresenÃ§a em obra, gestÃ£o de fornecedores e vistorias regulares atÃ© o dia em que vocÃª recebe as chaves do seu novo espaÃ§o.</div>
+      <div class="processo-text">PresenÃÂ§a em obra, gestÃÂ£o de fornecedores e vistorias regulares atÃÂ© o dia em que vocÃÂª recebe as chaves do seu novo espaÃÂ§o.</div>
     </div>
   </div>
 </section>
@@ -1131,12 +1132,12 @@ section { padding: 120px 48px; }
       <div class="dep-card">
         <div>
           <div class="dep-quote-mark">"</div>
-          <div class="dep-text">A Briana transformou nosso apartamento de 80 mÂ² num espaÃ§o que parece maior e muito mais nosso. Ela entendeu nossa rotina antes de propor qualquer soluÃ§Ã£o. O resultado superou tudo que imaginamos.</div>
+          <div class="dep-text">A Briana transformou nosso apartamento de 80 mÃÂ² num espaÃÂ§o que parece maior e muito mais nosso. Ela entendeu nossa rotina antes de propor qualquer soluÃÂ§ÃÂ£o. O resultado superou tudo que imaginamos.</div>
         </div>
         <div class="dep-footer">
           <div>
             <div class="dep-author-name">Fernanda & Rodrigo M.</div>
-            <div class="dep-author-proj">Apartamento 82 mÂ² â Moema, SP</div>
+            <div class="dep-author-proj">Apartamento 82 mÃÂ² Ã¢ÂÂ Moema, SP</div>
           </div>
           <div class="dep-type">Residencial</div>
         </div>
@@ -1144,12 +1145,12 @@ section { padding: 120px 48px; }
       <div class="dep-card">
         <div>
           <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Meu loft de 32 mÂ² virou o apÃª mais visitado pelos meus amigos. Cada centÃ­metro foi pensado. Briana tem um talento raro para fazer o pequeno parecer generoso e o simples parecer sofisticado.</div>
+          <div class="dep-text">Meu loft de 32 mÃÂ² virou o apÃÂª mais visitado pelos meus amigos. Cada centÃÂ­metro foi pensado. Briana tem um talento raro para fazer o pequeno parecer generoso e o simples parecer sofisticado.</div>
         </div>
         <div class="dep-footer">
           <div>
             <div class="dep-author-name">Lucas Andrade</div>
-            <div class="dep-author-proj">Loft 32 mÂ² â Pinheiros, SP</div>
+            <div class="dep-author-proj">Loft 32 mÃÂ² Ã¢ÂÂ Pinheiros, SP</div>
           </div>
           <div class="dep-type">Loft</div>
         </div>
@@ -1157,25 +1158,25 @@ section { padding: 120px 48px; }
       <div class="dep-card">
         <div>
           <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Nossa casa de 280 mÂ² foi um projeto de dois anos. A Briana esteve presente em cada fase, antecipou problemas que nem imaginÃ¡vamos e entregou exatamente o que prometeu â dentro do prazo.</div>
+          <div class="dep-text">Nossa casa de 280 mÃÂ² foi um projeto de dois anos. A Briana esteve presente em cada fase, antecipou problemas que nem imaginÃÂ¡vamos e entregou exatamente o que prometeu Ã¢ÂÂ dentro do prazo.</div>
         </div>
         <div class="dep-footer">
           <div>
-            <div class="dep-author-name">FamÃ­lia Costa</div>
-            <div class="dep-author-proj">ResidÃªncia 280 mÂ² â Alphaville, SP</div>
+            <div class="dep-author-name">FamÃÂ­lia Costa</div>
+            <div class="dep-author-proj">ResidÃÂªncia 280 mÃÂ² Ã¢ÂÂ Alphaville, SP</div>
           </div>
-          <div class="dep-type">Alto PadrÃ£o</div>
+          <div class="dep-type">Alto PadrÃÂ£o</div>
         </div>
       </div>
       <div class="dep-card">
         <div>
           <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Trabalhar com a Briana foi uma experiÃªncia diferente de tudo que jÃ¡ vi no mercado. Ela nÃ£o vende um estilo â ela revela o seu. E o resultado Ã© um ambiente que sÃ³ poderia ser nosso.</div>
+          <div class="dep-text">Trabalhar com a Briana foi uma experiÃÂªncia diferente de tudo que jÃÂ¡ vi no mercado. Ela nÃÂ£o vende um estilo Ã¢ÂÂ ela revela o seu. E o resultado ÃÂ© um ambiente que sÃÂ³ poderia ser nosso.</div>
         </div>
         <div class="dep-footer">
           <div>
             <div class="dep-author-name">Ana Paula Vieira</div>
-            <div class="dep-author-proj">Penthouse 210 mÂ² â Itaim Bibi, SP</div>
+            <div class="dep-author-proj">Penthouse 210 mÃÂ² Ã¢ÂÂ Itaim Bibi, SP</div>
           </div>
           <div class="dep-type">Exclusivo</div>
         </div>
@@ -1186,7 +1187,7 @@ section { padding: 120px 48px; }
     <button class="dep-btn" id="depPrev" aria-label="Anterior">
       <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="dep-btn" id="depNext" aria-label="PrÃ³ximo">
+    <button class="dep-btn" id="depNext" aria-label="PrÃÂ³ximo">
       <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
     </button>
     <span class="dep-count" id="depCount">01 / 04</span>
@@ -1198,7 +1199,7 @@ section { padding: 120px 48px; }
   <div class="parceria-header">
     <div class="section-eyebrow reveal">Parcerias</div>
     <h2 class="section-title reveal delay-1">Vamos construir<br><em>juntos.</em></h2>
-    <p class="parceria-lead reveal delay-2">Se vocÃª Ã© arquiteto ou corretor e quer oferecer uma experiÃªncia de interiores de alto nÃ­vel aos seus clientes, vamos conversar.</p>
+    <p class="parceria-lead reveal delay-2">Se vocÃÂª ÃÂ© arquiteto ou corretor e quer oferecer uma experiÃÂªncia de interiores de alto nÃÂ­vel aos seus clientes, vamos conversar.</p>
   </div>
   <div class="parceria-grid reveal delay-3">
     <div class="parceria-card">
@@ -1210,8 +1211,8 @@ section { padding: 120px 48px; }
       <div class="parceria-card-title">Para<br>Arquitetos</div>
       <ul class="parceria-list">
         <li>Parceria em projetos de interiores complementares</li>
-        <li>Co-criaÃ§Ã£o de conceito e apresentaÃ§Ã£o ao cliente</li>
-        <li>GestÃ£o integrada de fornecedores e execuÃ§Ã£o</li>
+        <li>Co-criaÃÂ§ÃÂ£o de conceito e apresentaÃÂ§ÃÂ£o ao cliente</li>
+        <li>GestÃÂ£o integrada de fornecedores e execuÃÂ§ÃÂ£o</li>
       </ul>
       <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
         Propor parceria
@@ -1225,9 +1226,9 @@ section { padding: 120px 48px; }
       </div>
       <div class="parceria-card-title">Para<br>Corretores</div>
       <ul class="parceria-list">
-        <li>Home staging para imÃ³veis de alto padrÃ£o</li>
+        <li>Home staging para imÃÂ³veis de alto padrÃÂ£o</li>
         <li>Projeto de interiores como diferencial de venda</li>
-        <li>ComissÃ£o sobre projetos indicados</li>
+        <li>ComissÃÂ£o sobre projetos indicados</li>
       </ul>
       <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
         Indicar cliente
@@ -1254,9 +1255,9 @@ section { padding: 120px 48px; }
         <label class="form-label">Tipo de contato</label>
         <select class="form-select">
           <option value="">Selecione</option>
-          <option>OrÃ§amento de projeto</option>
-          <option>Parceria â Arquiteto</option>
-          <option>Parceria â Corretor</option>
+          <option>OrÃÂ§amento de projeto</option>
+          <option>Parceria Ã¢ÂÂ Arquiteto</option>
+          <option>Parceria Ã¢ÂÂ Corretor</option>
           <option>Outros</option>
         </select>
       </div>
@@ -1278,7 +1279,7 @@ section { padding: 120px 48px; }
     <div class="footer-logo-name">Briana Duranti</div>
     <div class="footer-logo-sub">Arquitetura de Interiores</div>
     <div class="footer-rule"></div>
-    <div class="footer-tagline">EspaÃ§os que traduzem a personalidade de quem os habita.</div>
+    <div class="footer-tagline">EspaÃÂ§os que traduzem a personalidade de quem os habita.</div>
     <div class="footer-social" style="margin-top:24px">
       <a href="#" title="Instagram">
         <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -1292,7 +1293,7 @@ section { padding: 120px 48px; }
     </div>
   </div>
   <div>
-    <div class="footer-col-title">NavegaÃ§Ã£o</div>
+    <div class="footer-col-title">NavegaÃÂ§ÃÂ£o</div>
     <div class="footer-links">
       <a href="#sobre">Sobre</a>
       <a href="#portfolio">Projetos</a>
@@ -1301,11 +1302,11 @@ section { padding: 120px 48px; }
     </div>
   </div>
   <div>
-    <div class="footer-col-title">PortfÃ³lio</div>
+    <div class="footer-col-title">PortfÃÂ³lio</div>
     <div class="footer-links">
-      <a href="#portfolio">Lofts 24â40 mÂ²</a>
-      <a href="#portfolio">Aptos 50â150 mÂ²</a>
-      <a href="#portfolio">Acima de 150 mÂ²</a>
+      <a href="#portfolio">Lofts 24Ã¢ÂÂ40 mÃÂ²</a>
+      <a href="#portfolio">Aptos 50Ã¢ÂÂ150 mÃÂ²</a>
+      <a href="#portfolio">Acima de 150 mÃÂ²</a>
       <a href="#portfolio">Exclusivos</a>
     </div>
   </div>
@@ -1319,7 +1320,7 @@ section { padding: 120px 48px; }
   </div>
 </footer>
 <div class="footer-bottom">
-  <span class="footer-copy">Â© 2025 Briana Duranti. Todos os direitos reservados.</span>
+  <span class="footer-copy">ÃÂ© 2025 Briana Duranti. Todos os direitos reservados.</span>
   <a href="#" class="footer-admin-link" onclick="openAdmin(event)">Admin</a>
 </div>
 
@@ -1328,7 +1329,7 @@ section { padding: 120px 48px; }
   <div class="modal-box">
     <div class="modal-imgs">
       <img class="modal-img-main" id="modalImg" src="" alt="">
-      <button class="modal-close" onclick="closeModal()">Ã</button>
+      <button class="modal-close" onclick="closeModal()">ÃÂ</button>
     </div>
     <div class="modal-info">
       <div class="modal-cat" id="modalCat"></div>
@@ -1348,7 +1349,7 @@ section { padding: 120px 48px; }
       <div class="admin-login-sub">Briana Duranti Studio</div>
       <div class="form-field" style="margin-bottom:12px">
         <label class="admin-label" style="color:rgba(196,184,174,0.4)">Senha</label>
-        <input class="admin-input" type="password" id="adminPwd" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" onkeydown="if(event.key==='Enter')checkLogin()">
+        <input class="admin-input" type="password" id="adminPwd" placeholder="Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢" onkeydown="if(event.key==='Enter')checkLogin()">
       </div>
       <button class="admin-save" onclick="checkLogin()">Entrar</button>
       <div class="admin-login-error" id="loginError">Senha incorreta.</div>
@@ -1359,7 +1360,7 @@ section { padding: 120px 48px; }
   <div class="admin-panel" id="adminPanel" style="display:none">
     <div class="admin-header">
       <div class="admin-title">Painel Admin</div>
-      <button class="admin-close" onclick="closeAdmin()">Fechar Ã</button>
+      <button class="admin-close" onclick="closeAdmin()">Fechar ÃÂ</button>
     </div>
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('projetos',this)">Projetos</button>
@@ -1373,15 +1374,15 @@ section { padding: 120px 48px; }
         <div class="admin-form-title">Adicionar / Editar Projeto</div>
         <div class="admin-grid">
           <div class="admin-field">
-            <label class="admin-label">TÃ­tulo do projeto</label>
+            <label class="admin-label">TÃÂ­tulo do projeto</label>
             <input class="admin-input" id="pTitulo" placeholder="Ex: Loft Jardins">
           </div>
           <div class="admin-field">
             <label class="admin-label">Categoria</label>
             <select class="admin-select" id="pCat">
-              <option value="lofts">Lofts 24â40 mÂ²</option>
-              <option value="aptos">Aptos 50â150 mÂ²</option>
-              <option value="grandes">Acima de 150 mÂ²</option>
+              <option value="lofts">Lofts 24Ã¢ÂÂ40 mÃÂ²</option>
+              <option value="aptos">Aptos 50Ã¢ÂÂ150 mÃÂ²</option>
+              <option value="grandes">Acima de 150 mÃÂ²</option>
               <option value="exclusivos">Ambientes Exclusivos</option>
             </select>
           </div>
@@ -1390,11 +1391,11 @@ section { padding: 120px 48px; }
             <input class="admin-input" id="pImg" placeholder="https://...">
           </div>
           <div class="admin-field">
-            <label class="admin-label">Ãrea (mÂ²)</label>
-            <input class="admin-input" id="pArea" placeholder="Ex: 78 mÂ²">
+            <label class="admin-label">ÃÂrea (mÃÂ²)</label>
+            <input class="admin-input" id="pArea" placeholder="Ex: 78 mÃÂ²">
           </div>
           <div class="admin-field span2">
-            <label class="admin-label">DescriÃ§Ã£o</label>
+            <label class="admin-label">DescriÃÂ§ÃÂ£o</label>
             <textarea class="admin-textarea" id="pDesc" placeholder="Descreva o projeto..."></textarea>
           </div>
         </div>
@@ -1414,7 +1415,7 @@ section { padding: 120px 48px; }
           </div>
           <div class="admin-field">
             <label class="admin-label">Projeto</label>
-            <input class="admin-input" id="dProjeto" placeholder="Ex: Apartamento 82 mÂ², SP">
+            <input class="admin-input" id="dProjeto" placeholder="Ex: Apartamento 82 mÃÂ², SP">
           </div>
           <div class="admin-field span2">
             <label class="admin-label">Depoimento</label>
@@ -1425,7 +1426,7 @@ section { padding: 120px 48px; }
             <select class="admin-select" id="dTipo">
               <option>Loft</option>
               <option>Residencial</option>
-              <option>Alto PadrÃ£o</option>
+              <option>Alto PadrÃÂ£o</option>
               <option>Exclusivo</option>
             </select>
           </div>
@@ -1437,12 +1438,12 @@ section { padding: 120px 48px; }
 
     <!-- Parcerias -->
     <div class="admin-section" id="tab-parcerias">
-      <div class="admin-form-title" style="color:var(--cinza);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:300;margin-bottom:20px">SolicitaÃ§Ãµes recebidas</div>
+      <div class="admin-form-title" style="color:var(--cinza);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:300;margin-bottom:20px">SolicitaÃÂ§ÃÂµes recebidas</div>
       <div class="admin-list" id="parcList">
         <div class="admin-list-item">
           <div class="admin-list-info">
-            <div class="admin-list-name">FormulÃ¡rio de parceria ativo</div>
-            <div class="admin-list-meta">As solicitaÃ§Ãµes do formulÃ¡rio aparecerÃ£o aqui</div>
+            <div class="admin-list-name">FormulÃÂ¡rio de parceria ativo</div>
+            <div class="admin-list-meta">As solicitaÃÂ§ÃÂµes do formulÃÂ¡rio aparecerÃÂ£o aqui</div>
           </div>
         </div>
       </div>
@@ -1451,7 +1452,7 @@ section { padding: 120px 48px; }
 </div>
 
 <script>
-// âââ CURSOR âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CURSOR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 let mx = 0, my = 0, rx = 0, ry = 0;
@@ -1473,12 +1474,12 @@ document.querySelectorAll('a, button, .cat-card').forEach(el => {
   el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
 });
 
-// âââ NAVBAR SCROLL âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ NAVBAR SCROLL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
 
-// âââ MOBILE MENU âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MOBILE MENU Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 document.getElementById('hamburger').addEventListener('click', () => {
   document.getElementById('mobileMenu').classList.add('open');
 });
@@ -1487,14 +1488,14 @@ function closeMobile() {
   document.getElementById('mobileMenu').classList.remove('open');
 }
 
-// âââ REVEAL ON SCROLL âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ REVEAL ON SCROLL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 const reveals = document.querySelectorAll('.reveal');
 const revObs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.12 });
 reveals.forEach(el => revObs.observe(el));
 
-// âââ DEPOIMENTOS CAROUSEL âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ DEPOIMENTOS CAROUSEL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 let depIdx = 0;
 const depCards = document.querySelectorAll('.dep-card');
 const total = depCards.length;
@@ -1512,31 +1513,31 @@ document.getElementById('depPrev').addEventListener('click', () => {
   depIdx = (depIdx - 1 + total) % total; updateDep();
 });
 
-// âââ PORTFOLIO MODAL âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PORTFOLIO MODAL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 const catData = {
   lofts: {
     title: 'Lofts Boutique',
-    tag: 'Lofts Â· 24 â 40 mÂ²',
+    tag: 'Lofts ÃÂ· 24 Ã¢ÂÂ 40 mÃÂ²',
     img: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&q=80',
-    desc: 'Projetos de lofts compactos onde cada centÃ­metro Ã© pensado para ampliar a sensaÃ§Ã£o de espaÃ§o sem abrir mÃ£o do conforto e da personalidade. SoluÃ§Ãµes de mobiliÃ¡rio integrado, iluminaÃ§Ã£o estratÃ©gica e paletas que fazem o espaÃ§o respirar.'
+    desc: 'Projetos de lofts compactos onde cada centÃÂ­metro ÃÂ© pensado para ampliar a sensaÃÂ§ÃÂ£o de espaÃÂ§o sem abrir mÃÂ£o do conforto e da personalidade. SoluÃÂ§ÃÂµes de mobiliÃÂ¡rio integrado, iluminaÃÂ§ÃÂ£o estratÃÂ©gica e paletas que fazem o espaÃÂ§o respirar.'
   },
   aptos: {
     title: 'Apartamentos Residenciais',
-    tag: 'Apartamentos Â· 50 â 150 mÂ²',
+    tag: 'Apartamentos ÃÂ· 50 Ã¢ÂÂ 150 mÃÂ²',
     img: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=1200&q=80',
-    desc: 'A faixa mais versÃ¡til do portfÃ³lio. Apartamentos que equilibram funcionalidade para o dia a dia com a sofisticaÃ§Ã£o que o cliente deseja. Da planta livre ao layout compartimentado, cada projeto nasce do modo de vida de quem habita.'
+    desc: 'A faixa mais versÃÂ¡til do portfÃÂ³lio. Apartamentos que equilibram funcionalidade para o dia a dia com a sofisticaÃÂ§ÃÂ£o que o cliente deseja. Da planta livre ao layout compartimentado, cada projeto nasce do modo de vida de quem habita.'
   },
   grandes: {
     title: 'Casas & Grandes Apartamentos',
-    tag: 'Acima de 150 mÂ²',
+    tag: 'Acima de 150 mÃÂ²',
     img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=1200&q=80',
-    desc: 'Projetos de grande porte que exigem orquestraÃ§Ã£o de mÃºltiplos ambientes, gestÃ£o de fornecedores especializados e atenÃ§Ã£o milimÃ©trica a cada detalhe. ResidÃªncias que sÃ£o patrimÃ´nio â projetadas para durar geraÃ§Ãµes.'
+    desc: 'Projetos de grande porte que exigem orquestraÃÂ§ÃÂ£o de mÃÂºltiplos ambientes, gestÃÂ£o de fornecedores especializados e atenÃÂ§ÃÂ£o milimÃÂ©trica a cada detalhe. ResidÃÂªncias que sÃÂ£o patrimÃÂ´nio Ã¢ÂÂ projetadas para durar geraÃÂ§ÃÂµes.'
   },
   exclusivos: {
     title: 'Ambientes Exclusivos',
     tag: 'Alta Exclusividade',
     img: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80',
-    desc: 'Para clientes que buscam o que nÃ£o existe pronto. Materiais especiais, peÃ§as Ãºnicas, soluÃ§Ãµes sob medida em cada detalhe. Projetos onde o processo Ã© tÃ£o importante quanto o resultado â uma experiÃªncia de criaÃ§Ã£o compartilhada.'
+    desc: 'Para clientes que buscam o que nÃÂ£o existe pronto. Materiais especiais, peÃÂ§as ÃÂºnicas, soluÃÂ§ÃÂµes sob medida em cada detalhe. Projetos onde o processo ÃÂ© tÃÂ£o importante quanto o resultado Ã¢ÂÂ uma experiÃÂªncia de criaÃÂ§ÃÂ£o compartilhada.'
   }
 };
 document.querySelectorAll('.cat-card').forEach(card => {
@@ -1557,15 +1558,15 @@ document.getElementById('projectModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
 
-// âââ FORM âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ FORM Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 function submitForm(e) {
   e.preventDefault();
   const btn = e.target.querySelector('.form-submit span');
-  btn.textContent = 'Mensagem enviada â';
+  btn.textContent = 'Mensagem enviada Ã¢ÂÂ';
   setTimeout(() => { btn.textContent = 'Enviar mensagem'; }, 3000);
 }
 
-// âââ ADMIN âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ADMIN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 let adminLoggedIn = false;
 const ADMIN_PWD = 'briana2025';
 
@@ -1602,7 +1603,7 @@ function switchTab(name, btn) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-// âââ PROJECTS CRUD âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PROJECTS CRUD Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 let projects = JSON.parse(localStorage.getItem('bd_projects') || '[]');
 let depoimentos = JSON.parse(localStorage.getItem('bd_depoimentos') || '[]');
 
@@ -1638,7 +1639,7 @@ function renderProjectList() {
     <div class="admin-list-item">
       <div class="admin-list-info">
         <div class="admin-list-name">${p.titulo}</div>
-        <div class="admin-list-meta">${p.cat} Â· ${p.area}</div>
+        <div class="admin-list-meta">${p.cat} ÃÂ· ${p.area}</div>
       </div>
       <div class="admin-list-actions">
         <button class="admin-action-btn del" onclick="deleteProject(${p.id})">Remover</button>
@@ -1677,7 +1678,7 @@ function renderDepList() {
     <div class="admin-list-item">
       <div class="admin-list-info">
         <div class="admin-list-name">${d.nome}</div>
-        <div class="admin-list-meta">${d.projeto} Â· ${d.tipo}</div>
+        <div class="admin-list-meta">${d.projeto} ÃÂ· ${d.tipo}</div>
       </div>
       <div class="admin-list-actions">
         <button class="admin-action-btn del" onclick="deleteDepoimento(${d.id})">Remover</button>
@@ -1686,7 +1687,7 @@ function renderDepList() {
   `).join('');
 }
 
-// âââ TOUCH SWIPE depoimentos âââ
+// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ TOUCH SWIPE depoimentos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 let touchX = 0;
 document.querySelector('.dep-track-wrap').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
 document.querySelector('.dep-track-wrap').addEventListener('touchend', e => {
