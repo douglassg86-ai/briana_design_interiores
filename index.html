@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@100;200;300;400;500&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
-<script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <style>
@@ -1529,11 +1528,25 @@ section { padding: 120px 48px; }
 <script>
 // ─── SUPABASE INIT ───
 let sb = null;
-try {
-  if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
-    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
-} catch(e) { console.warn('Supabase nao configurado:', e); }
+let sbReady = (async function initSupabase() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.url && data.key) {
+        sb = supabase.createClient(data.url, data.key);
+        return;
+      }
+    }
+  } catch(e) { console.warn('Falha ao buscar config dinâmico:', e); }
+  
+  // Fallback dev local
+  try {
+    if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
+      sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  } catch(e) {}
+})();
 
 // ─── CURSOR ───
 const cursor = document.getElementById('cursor');
@@ -1625,6 +1638,7 @@ function switchTab(name, btn) {
 // ─── CRM — LEADS ───
 let allLeads = [];
 async function loadLeads() {
+  await sbReady;
   const tbody = document.getElementById('crmTableBody');
   if (!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(196,184,174,0.3);padding:30px">Carregando...</td></tr>';
@@ -1712,6 +1726,7 @@ async function importCRMExcel(event) {
 // ─── PROJETOS ───
 let projects = [];
 async function loadProjects() {
+  await sbReady;
   if (sb) { const {data}=await sb.from('projects').select('*').order('created_at',{ascending:false}); projects=data||[]; }
   else { projects=JSON.parse(localStorage.getItem('bd_projects')||'[]'); }
   renderProjectList();
@@ -1751,6 +1766,7 @@ function closeBrokerModal() {
   const fs=document.getElementById('bFileStatus');if(fs)fs.textContent='';
 }
 async function submitBrokerReferral() {
+  await sbReady;
   const bn=document.getElementById('bBrokerName').value.trim();
   const bw=document.getElementById('bBrokerWa').value.trim();
   const cn=document.getElementById('bClientName').value.trim();
