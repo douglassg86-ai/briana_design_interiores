@@ -1776,7 +1776,7 @@ async function submitBrokerReferral() {
   } else {
     await insertLead({categoria_projeto:cat,parceiro_id:pid,broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,status:'briefing'});
   }
-  notifyWhatsApp(bn,cn,cw,cat);
+  notifyAdminEmail(bn, bw, cn, cw, cat, fi.files.length>0 ? 'Enviou planilhas/arquivos em anexo.' : '');
   document.getElementById('brokerFormContent').style.display='none';
   document.getElementById('brokerSuccessMsg').style.display='block';
   setTimeout(closeBrokerModal,3000);
@@ -1810,11 +1810,15 @@ function brokerAddMore() {
 const bFileEl=document.getElementById('bFileInput');
 if(bFileEl) bFileEl.addEventListener('change',e=>{const f=e.target.files[0];const s=document.getElementById('bFileStatus');if(s)s.textContent=f?'Arquivo: '+f.name:'';});
 
-// ─── WHATSAPP NOTIFY ───
-function notifyWhatsApp(brokerName,clientName,clientWa,cat) {
-  const numero='5551992214957';
-  const msg=encodeURIComponent('Nova indicação recebida!\n\nCorretor: '+brokerName+'\nCliente: '+clientName+'\nWhatsApp: '+(clientWa||'não informado')+'\nCategoria: '+(cat||'Não especificada')+'\n\nAcesse o painel admin para gerenciar este lead.');
-  window.open('https://wa.me/'+numero+'?text='+msg,'_blank');
+// ─── EMAIL NOTIFY (SERVERLESS) ───
+async function notifyAdminEmail(brokerName, brokerWa, clientName, clientWa, category, notes) {
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brokerName, brokerWa, clientName, clientWa, category, notes })
+    });
+  } catch(e) { console.error('Erro ao notificar admin:', e); }
 }
 
 // ─── INIT ───
