@@ -1637,7 +1637,7 @@ function renderCRM() {
   const sl = {briefing:'Briefing',apresentacao:'Apresentacao',financeiro:'Financeiro',medicao:'Medicao',conferencia:'Conferencia',acompanhamento:'Acompanhamento',vistoria:'Vistoria',entrega:'Entrega'};
   tbody.innerHTML = leads.map(l=>`
     <tr>
-      <td style="white-space:nowrap;color:rgba(196,184,174,0.5);font-size:11px">${new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+      <td style="white-space:nowrap;color:rgba(196,184,174,0.5);font-size:11px">${new Date(l.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</td>
       <td><strong style="font-weight:400">${l.client_name||'-'}</strong>${l.notes?`<br><small style="color:rgba(196,184,174,0.35);font-size:10px">${l.notes}</small>`:''}</td>
       <td style="font-size:11px;color:rgba(196,184,174,0.7);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${l.categoria_projeto||'-'}">${l.categoria_projeto||'-'}</td>
       <td>${l.client_whatsapp?`<a href="https://wa.me/55${l.client_whatsapp.replace(/\D/g,'')}" target="_blank" style="color:var(--terra);text-decoration:none">${l.client_whatsapp}</a>`:'-'}</td>
