@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Jost:wght@100;200;300;400;500&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+<script src="supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <style>
 /* ─── RESET & BASE ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +38,203 @@ a { text-decoration: none; color: inherit; }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
 button { font-family: inherit; cursor: none; }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CUSTOM CURSOR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── CRM STATUS BADGE ─── */
+.crm-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 2px;
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 300;
+}
+.crm-badge.briefing    { background: rgba(196,113,74,.15); color: var(--terra); }
+.crm-badge.apresentacao{ background: rgba(196,113,74,.25); color: var(--terra); }
+.crm-badge.financeiro  { background: rgba(100,149,237,.15); color: #6495ed; }
+.crm-badge.medicao     { background: rgba(100,200,100,.15); color: #5aaa5a; }
+.crm-badge.conferencia { background: rgba(200,180,50,.15);  color: #b8a020; }
+.crm-badge.acompanhamento { background: rgba(150,100,200,.15); color: #9464c8; }
+.crm-badge.vistoria    { background: rgba(50,180,180,.15);  color: #32a8a8; }
+.crm-badge.entrega     { background: rgba(50,180,50,.2);    color: #28a028; }
+
+/* ─── CRM TABLE ─── */
+.crm-table-wrap { overflow-x: auto; margin-top: 8px; }
+.crm-table { width: 100%; border-collapse: collapse; }
+.crm-table th {
+  font-family: 'Jost', sans-serif;
+  font-size: 7px; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(196,184,174,0.35);
+  font-weight: 300; padding: 10px 12px; text-align: left;
+  border-bottom: 0.5px solid rgba(196,184,174,0.1);
+}
+.crm-table td {
+  padding: 14px 12px;
+  font-size: 13px; color: var(--linho);
+  font-weight: 300;
+  border-bottom: 0.5px solid rgba(196,184,174,0.06);
+  vertical-align: middle;
+}
+.crm-table tr:hover td { background: rgba(255,255,255,0.02); }
+.crm-status-select {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  color: var(--linho); font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 5px 8px;
+  outline: none; transition: border-color 0.3s;
+}
+.crm-status-select:focus { border-color: var(--terra); }
+.crm-status-select option { background: var(--chumbo2); }
+.crm-filters {
+  display: flex; gap: 12px; align-items: center;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.crm-filter-input {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 8px 14px; color: var(--linho);
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  font-weight: 300; outline: none; flex: 1; min-width: 180px;
+  transition: border-color 0.3s;
+}
+.crm-filter-input:focus { border-color: var(--terra); }
+.crm-filter-select {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 8px 14px; color: var(--linho);
+  font-family: 'Jost', sans-serif; font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 300; outline: none;
+  transition: border-color 0.3s;
+}
+.crm-filter-select option { background: var(--chumbo2); }
+.crm-add-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; background: var(--terra); border: none;
+  font-family: 'Jost', sans-serif; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--linho); font-weight: 300;
+  transition: background 0.3s; white-space: nowrap;
+}
+.crm-add-btn:hover { background: var(--terra2); }
+.crm-import-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; background: none;
+  border: 0.5px solid rgba(196,184,174,0.2);
+  font-family: 'Jost', sans-serif; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--cinza); font-weight: 300;
+  transition: border-color 0.3s, color 0.3s; white-space: nowrap;
+}
+.crm-import-btn:hover { border-color: var(--terra); color: var(--terra); }
+.crm-toolbar {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 12px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+
+/* ─── BROKER MODAL ─── */
+.broker-modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,28,28,0.92); z-index: 400;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.broker-modal-overlay.open { display: flex; }
+.broker-modal-box {
+  background: var(--chumbo2);
+  border: 0.5px solid rgba(196,184,174,0.12);
+  padding: 48px; max-width: 520px; width: 100%;
+  position: relative;
+}
+.broker-modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--linho); margin-bottom: 6px;
+}
+.broker-modal-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200; margin-bottom: 32px;
+}
+.broker-modal-close {
+  position: absolute; top: 20px; right: 24px;
+  background: none; border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(196,184,174,0.3);
+  font-weight: 200; transition: color 0.3s;
+}
+.broker-modal-close:hover { color: var(--terra); }
+.broker-section-label {
+  font-family: 'Jost', sans-serif; font-size: 7px;
+  letter-spacing: 5px; text-transform: uppercase;
+  color: var(--terra); font-weight: 200;
+  margin-bottom: 12px; margin-top: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.broker-section-label::before {
+  content: ''; width: 20px; height: 0.5px; background: var(--terra);
+}
+.broker-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.broker-form-grid.single { grid-template-columns: 1fr; }
+.broker-field { display: flex; flex-direction: column; gap: 5px; }
+.broker-label {
+  font-family: 'Jost', sans-serif; font-size: 7px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(196,184,174,0.35); font-weight: 200;
+}
+.broker-input {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 10px 14px; color: var(--linho);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 300; outline: none; width: 100%;
+  transition: border-color 0.3s;
+}
+.broker-input:focus { border-color: var(--terra); }
+.broker-input::placeholder { color: rgba(196,184,174,0.2); }
+.broker-divider {
+  border: none; border-top: 0.5px solid rgba(196,184,174,0.1);
+  margin: 24px 0 0;
+}
+.broker-actions {
+  display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+}
+.broker-submit {
+  flex: 1; padding: 14px 24px; background: var(--terra); border: none;
+  font-family: 'Jost', sans-serif; font-size: 9px;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--linho); font-weight: 300;
+  transition: background 0.3s;
+}
+.broker-submit:hover { background: var(--terra2); }
+.broker-add-more {
+  padding: 14px 24px; background: none;
+  border: 0.5px solid rgba(196,184,174,0.2);
+  font-family: 'Jost', sans-serif; font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--cinza); font-weight: 200;
+  transition: border-color 0.3s, color 0.3s; white-space: nowrap;
+}
+.broker-add-more:hover { border-color: var(--terra); color: var(--terra); }
+.broker-file-label {
+  display: flex; align-items: center; gap: 10px;
+  border: 0.5px dashed rgba(196,184,174,0.2);
+  padding: 14px 20px; cursor: pointer;
+  transition: border-color 0.3s;
+  font-family: 'Jost', sans-serif; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(196,184,174,0.3); font-weight: 200;
+}
+.broker-file-label:hover { border-color: var(--terra); color: var(--terra); }
+.broker-file-input { display: none; }
+.broker-success {
+  display: none; text-align: center; padding: 20px 0;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 22px; color: var(--terra);
+}
+
+/* ─── CUSTOM CURSOR ─── */
 .cursor {
   width: 8px; height: 8px;
   background: var(--chumbo);
@@ -58,7 +257,7 @@ button { font-family: inherit; cursor: none; }
   opacity: 0.4;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ NAVBAR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── NAVBAR ─── */
 #navbar {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -132,7 +331,7 @@ button { font-family: inherit; cursor: none; }
   transition: transform 0.3s, opacity 0.3s;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MOBILE MENU Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── MOBILE MENU ─── */
 .mobile-menu {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: var(--chumbo); z-index: 200;
@@ -160,7 +359,7 @@ button { font-family: inherit; cursor: none; }
   z-index: 201;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ HERO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── HERO ─── */
 #hero {
   height: 100vh; min-height: 600px;
   position: relative; overflow: hidden;
@@ -246,7 +445,7 @@ button { font-family: inherit; cursor: none; }
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SECTIONS BASE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── SECTIONS BASE ─── */
 section { padding: 120px 48px; }
 .reveal {
   opacity: 0; transform: translateY(40px);
@@ -275,7 +474,7 @@ section { padding: 120px 48px; }
   letter-spacing: -1px;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ SOBRE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── SOBRE ─── */
 #sobre {
   background: var(--branco);
   display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
@@ -322,7 +521,7 @@ section { padding: 120px 48px; }
   font-weight: 200; margin-top: 4px;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PORTFÃÂLIO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── PORTFÓLIO ─── */
 #portfolio { background: var(--linho); padding-bottom: 80px; }
 .portfolio-header {
   display: flex; justify-content: space-between; align-items: flex-end;
@@ -385,7 +584,7 @@ section { padding: 120px 48px; }
 }
 .cat-cta-line { width: 24px; height: 0.5px; background: var(--terra); }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PROCESSO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── PROCESSO ─── */
 #processo {
   background: var(--chumbo);
   padding: 120px 48px;
@@ -422,7 +621,7 @@ section { padding: 120px 48px; }
   line-height: 1.8; font-weight: 300;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ DEPOIMENTOS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── DEPOIMENTOS ─── */
 #depoimentos {
   background: var(--branco);
   padding: 120px 0;
@@ -496,7 +695,7 @@ section { padding: 120px 48px; }
   color: var(--cinza); font-weight: 200;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PARCERIA Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── PARCERIA ─── */
 #parceria {
   background: var(--chumbo);
   padding: 120px 48px;
@@ -614,7 +813,7 @@ section { padding: 120px 48px; }
 }
 .form-submit:hover { background: var(--terra2); }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CONTATO / FOOTER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── CONTATO / FOOTER ─── */
 #footer {
   background: var(--linho2);
   padding: 64px 48px;
@@ -684,7 +883,7 @@ section { padding: 120px 48px; }
 }
 .footer-admin-link:hover { color: var(--terra); }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ WHATSAPP FAB Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── WHATSAPP FAB ─── */
 .whatsapp-fab {
   position: fixed; bottom: 32px; right: 32px; z-index: 200;
   width: 52px; height: 52px;
@@ -697,7 +896,110 @@ section { padding: 120px 48px; }
 .whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
 .whatsapp-fab svg { width: 26px; height: 26px; fill: white; }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ADMIN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── MODAL INDICAÇÃO CORRETOR ─── */
+.broker-modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(28,28,28,0.92); z-index: 400;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.broker-modal-overlay.open { display: flex; }
+.broker-modal-box {
+  background: var(--chumbo2);
+  border: 0.5px solid rgba(196,184,174,0.12);
+  padding: 48px; max-width: 520px; width: 100%;
+  position: relative;
+}
+.broker-modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 28px;
+  color: var(--linho); margin-bottom: 6px;
+}
+.broker-modal-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--cinza);
+  font-weight: 200; margin-bottom: 32px;
+}
+.broker-modal-close {
+  position: absolute; top: 20px; right: 24px;
+  background: none; border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(196,184,174,0.3);
+  font-weight: 200; transition: color 0.3s;
+}
+.broker-modal-close:hover { color: var(--terra); }
+.broker-section-label {
+  font-family: 'Jost', sans-serif; font-size: 7px;
+  letter-spacing: 5px; text-transform: uppercase;
+  color: var(--terra); font-weight: 200;
+  margin-bottom: 12px; margin-top: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.broker-section-label::before {
+  content: ''; width: 20px; height: 0.5px; background: var(--terra);
+}
+.broker-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.broker-form-grid.single { grid-template-columns: 1fr; }
+.broker-field { display: flex; flex-direction: column; gap: 5px; }
+.broker-label {
+  font-family: 'Jost', sans-serif; font-size: 7px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(196,184,174,0.35); font-weight: 200;
+}
+.broker-input {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(196,184,174,0.15);
+  padding: 10px 14px; color: var(--linho);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 300; outline: none; width: 100%;
+  transition: border-color 0.3s;
+}
+.broker-input:focus { border-color: var(--terra); }
+.broker-input::placeholder { color: rgba(196,184,174,0.2); }
+.broker-divider {
+  border: none; border-top: 0.5px solid rgba(196,184,174,0.1);
+  margin: 24px 0 0;
+}
+.broker-actions {
+  display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
+}
+.broker-submit {
+  flex: 1; padding: 14px 24px; background: var(--terra); border: none;
+  font-family: 'Jost', sans-serif; font-size: 9px;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--linho); font-weight: 300;
+  transition: background 0.3s;
+}
+.broker-submit:hover { background: var(--terra2); }
+.broker-add-more {
+  padding: 14px 24px; background: none;
+  border: 0.5px solid rgba(196,184,174,0.2);
+  font-family: 'Jost', sans-serif; font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--cinza); font-weight: 200;
+  transition: border-color 0.3s, color 0.3s; white-space: nowrap;
+}
+.broker-add-more:hover { border-color: var(--terra); color: var(--terra); }
+.broker-file-label {
+  display: flex; align-items: center; gap: 10px;
+  border: 0.5px dashed rgba(196,184,174,0.2);
+  padding: 14px 20px; cursor: pointer;
+  transition: border-color 0.3s;
+  font-family: 'Jost', sans-serif; font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(196,184,174,0.3); font-weight: 200;
+}
+.broker-file-label:hover { border-color: var(--terra); color: var(--terra); }
+.broker-file-input { display: none; }
+.broker-success {
+  display: none; text-align: center; padding: 20px 0;
+  font-family: 'DM Serif Display', serif;
+  font-style: italic; font-size: 22px; color: var(--terra);
+}
+
+/* ─── ADMIN ─── */
 #admin-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(28,28,28,0.95); z-index: 500;
@@ -846,7 +1148,7 @@ section { padding: 120px 48px; }
 }
 .admin-login-error.show { display: block; }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MODAL PROJETO Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── MODAL PROJETO ─── */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(28,28,28,0.92); z-index: 300;
@@ -884,7 +1186,7 @@ section { padding: 120px 48px; }
   color: var(--linho); display: flex; align-items: center; justify-content: center;
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ANIMATIONS Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── ANIMATIONS ─── */
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
 }
@@ -895,7 +1197,7 @@ section { padding: 120px 48px; }
   to { transform: translateY(0); }
 }
 
-/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ RESPONSIVE Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
+/* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
   section { padding: 80px 24px; }
   #navbar { padding: 0 24px; }
@@ -940,6 +1242,38 @@ section { padding: 120px 48px; }
 <a href="https://wa.me/5551992214957" target="_blank" class="whatsapp-fab" title="Fale conosco no WhatsApp">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
 </a>
+
+<!-- MODAL INDICAÇÃO CORRETOR -->
+<div class="broker-modal-overlay" id="brokerModal">
+  <div class="broker-modal-box">
+    <button class="broker-modal-close" onclick="closeBrokerModal()">Fechar ×</button>
+    <div class="broker-modal-title">Indicar cliente</div>
+    <div class="broker-modal-sub">Parceria — Briana Duranti Studio</div>
+    <div id="brokerSuccessMsg" class="broker-success">Indicação enviada com sucesso!</div>
+    <div id="brokerFormContent">
+      <div class="broker-section-label">Seus dados (corretor)</div>
+      <div class="broker-form-grid">
+        <div class="broker-field"><label class="broker-label">Seu nome</label><input class="broker-input" id="bBrokerName" placeholder="Nome completo"></div>
+        <div class="broker-field"><label class="broker-label">Seu WhatsApp</label><input class="broker-input" id="bBrokerWa" placeholder="(51) 99999-9999" type="tel"></div>
+      </div>
+      <div class="broker-section-label">Dados do cliente indicado</div>
+      <div class="broker-form-grid">
+        <div class="broker-field"><label class="broker-label">Nome do cliente</label><input class="broker-input" id="bClientName" placeholder="Nome completo"></div>
+        <div class="broker-field"><label class="broker-label">WhatsApp do cliente</label><input class="broker-input" id="bClientWa" placeholder="(51) 99999-9999" type="tel"></div>
+      </div>
+      <div class="broker-section-label" style="margin-top:28px">Tem muitos clientes? Envie uma lista</div>
+      <label class="broker-file-label" for="bFileInput">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Anexar Excel ou PDF
+      </label>
+      <input class="broker-file-input" type="file" id="bFileInput" accept=".xlsx,.xls,.pdf">
+      <hr class="broker-divider">
+      <div class="broker-actions">
+        <button class="broker-submit" onclick="submitBrokerReferral()">Enviar indicação</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
@@ -1027,67 +1361,42 @@ section { padding: 120px 48px; }
     </div>
   </div>
   <div class="portfolio-cats reveal delay-2" id="portfolioCats">
-
-    <div class="cat-card" data-cat="lofts" style="cursor:none">
-      <div class="cat-bg">
-        <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80" alt="Lofts">
-      </div>
+    <div class="cat-card" data-cat="lofts">
+      <div class="cat-bg"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80" alt="Lofts"></div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
         <div class="cat-tag">24 — 40 m²</div>
         <div class="cat-title">Lofts<br>Boutique</div>
-        <div class="cat-cta">
-          <div class="cat-cta-line"></div>
-          <span class="cat-cta-text">Ver projetos</span>
-        </div>
+        <div class="cat-cta"><div class="cat-cta-line"></div><span class="cat-cta-text">Ver projetos</span></div>
       </div>
     </div>
-
-    <div class="cat-card" data-cat="aptos" style="cursor:none">
-      <div class="cat-bg">
-        <img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&q=80" alt="Apartamentos">
-      </div>
+    <div class="cat-card" data-cat="aptos">
+      <div class="cat-bg"><img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=800&q=80" alt="Apartamentos"></div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
         <div class="cat-tag">50 — 150 m²</div>
         <div class="cat-title">Apartamentos<br>Residenciais</div>
-        <div class="cat-cta">
-          <div class="cat-cta-line"></div>
-          <span class="cat-cta-text">Ver projetos</span>
-        </div>
+        <div class="cat-cta"><div class="cat-cta-line"></div><span class="cat-cta-text">Ver projetos</span></div>
       </div>
     </div>
-
-    <div class="cat-card" data-cat="grandes" style="cursor:none">
-      <div class="cat-bg">
-        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" alt="Acima de 150m²">
-      </div>
+    <div class="cat-card" data-cat="grandes">
+      <div class="cat-bg"><img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80" alt="Acima de 150m²"></div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
         <div class="cat-tag">Acima de 150 m²</div>
         <div class="cat-title">Casas &<br>Grandes Aptos</div>
-        <div class="cat-cta">
-          <div class="cat-cta-line"></div>
-          <span class="cat-cta-text">Ver projetos</span>
-        </div>
+        <div class="cat-cta"><div class="cat-cta-line"></div><span class="cat-cta-text">Ver projetos</span></div>
       </div>
     </div>
-
-    <div class="cat-card" data-cat="exclusivos" style="cursor:none">
-      <div class="cat-bg">
-        <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80" alt="Ambientes Exclusivos">
-      </div>
+    <div class="cat-card" data-cat="exclusivos">
+      <div class="cat-bg"><img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80" alt="Ambientes Exclusivos"></div>
       <div class="cat-overlay"></div>
       <div class="cat-content">
         <div class="cat-tag">Alta Exclusividade</div>
         <div class="cat-title">Ambientes<br>Exclusivos</div>
-        <div class="cat-cta">
-          <div class="cat-cta-line"></div>
-          <span class="cat-cta-text">Ver projetos</span>
-        </div>
+        <div class="cat-cta"><div class="cat-cta-line"></div><span class="cat-cta-text">Ver projetos</span></div>
       </div>
     </div>
-
   </div>
 </section>
 
@@ -1098,26 +1407,10 @@ section { padding: 120px 48px; }
     <h2 class="section-title reveal delay-1">Do conceito à<br><em>entrega final</em></h2>
   </div>
   <div class="processo-grid">
-    <div class="processo-item reveal">
-      <div class="processo-num">01</div>
-      <div class="processo-title">Escuta & briefing</div>
-      <div class="processo-text">Uma conversa profunda sobre como você vive, o que te incomoda no espaço atual e como você imagina seu novo ambiente. Nada é assumido.</div>
-    </div>
-    <div class="processo-item reveal delay-1">
-      <div class="processo-num">02</div>
-      <div class="processo-title">Conceito & moodboard</div>
-      <div class="processo-text">Desenvolvemos a identidade visual do espaço antes de qualquer execução — paleta, materiais, mobiliário, iluminação. Você aprova cada detalhe.</div>
-    </div>
-    <div class="processo-item reveal delay-2">
-      <div class="processo-num">03</div>
-      <div class="processo-title">Projeto técnico</div>
-      <div class="processo-text">Plantas, cortes, detalhamentos e especificações completas. Um arquivo que qualquer profissional consegue executar com precisão.</div>
-    </div>
-    <div class="processo-item reveal delay-3">
-      <div class="processo-num">04</div>
-      <div class="processo-title">Acompanhamento & entrega</div>
-      <div class="processo-text">Presença em obra, gestão de fornecedores e vistorias regulares até o dia em que você recebe as chaves do seu novo espaço.</div>
-    </div>
+    <div class="processo-item reveal"><div class="processo-num">01</div><div class="processo-title">Escuta & briefing</div><div class="processo-text">Uma conversa profunda sobre como você vive.</div></div>
+    <div class="processo-item reveal delay-1"><div class="processo-num">02</div><div class="processo-title">Conceito & moodboard</div><div class="processo-text">Desenvolvemos a identidade visual do espaço.</div></div>
+    <div class="processo-item reveal delay-2"><div class="processo-num">03</div><div class="processo-title">Projeto técnico</div><div class="processo-text">Plantas, cortes e especificações completas.</div></div>
+    <div class="processo-item reveal delay-3"><div class="processo-num">04</div><div class="processo-title">Acompanhamento & entrega</div><div class="processo-text">Gestão de obra até a entrega das chaves.</div></div>
   </div>
 </section>
 
@@ -1130,67 +1423,15 @@ section { padding: 120px 48px; }
   <div class="dep-track-wrap">
     <div class="dep-track" id="depTrack">
       <div class="dep-card">
-        <div>
-          <div class="dep-quote-mark">"</div>
-          <div class="dep-text">A Briana transformou nosso apartamento de 80 m² num espaço que parece maior e muito mais nosso. Ela entendeu nossa rotina antes de propor qualquer solução. O resultado superou tudo que imaginamos.</div>
-        </div>
-        <div class="dep-footer">
-          <div>
-            <div class="dep-author-name">Fernanda & Rodrigo M.</div>
-            <div class="dep-author-proj">Apartamento 82 m² — Moema, SP</div>
-          </div>
-          <div class="dep-type">Residencial</div>
-        </div>
-      </div>
-      <div class="dep-card">
-        <div>
-          <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Meu loft de 32 m² virou o apê mais visitado pelos meus amigos. Cada centímetro foi pensado. Briana tem um talento raro para fazer o pequeno parecer generoso e o simples parecer sofisticado.</div>
-        </div>
-        <div class="dep-footer">
-          <div>
-            <div class="dep-author-name">Lucas Andrade</div>
-            <div class="dep-author-proj">Loft 32 m² — Pinheiros, SP</div>
-          </div>
-          <div class="dep-type">Loft</div>
-        </div>
-      </div>
-      <div class="dep-card">
-        <div>
-          <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Nossa casa de 280 m² foi um projeto de dois anos. A Briana esteve presente em cada fase, antecipou problemas que nem imaginávamos e entregou exatamente o que prometeu — dentro do prazo.</div>
-        </div>
-        <div class="dep-footer">
-          <div>
-            <div class="dep-author-name">Família Costa</div>
-            <div class="dep-author-proj">Residência 280 m² — Alphaville, SP</div>
-          </div>
-          <div class="dep-type">Alto Padrão</div>
-        </div>
-      </div>
-      <div class="dep-card">
-        <div>
-          <div class="dep-quote-mark">"</div>
-          <div class="dep-text">Trabalhar com a Briana foi uma experiência diferente de tudo que já vi no mercado. Ela não vende um estilo — ela revela o seu. E o resultado é um ambiente que só poderia ser nosso.</div>
-        </div>
-        <div class="dep-footer">
-          <div>
-            <div class="dep-author-name">Ana Paula Vieira</div>
-            <div class="dep-author-proj">Penthouse 210 m² — Itaim Bibi, SP</div>
-          </div>
-          <div class="dep-type">Exclusivo</div>
-        </div>
+        <div><div class="dep-quote-mark">"</div><div class="dep-text">A Briana transformou nosso apartamento num espaço que parece maior e muito mais nosso.</div></div>
+        <div class="dep-footer"><div><div class="dep-author-name">Fernanda & Rodrigo M.</div><div class="dep-author-proj">Apartamento 82 m²</div></div><div class="dep-type">Residencial</div></div>
       </div>
     </div>
   </div>
   <div class="dep-controls">
-    <button class="dep-btn" id="depPrev" aria-label="Anterior">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <button class="dep-btn" id="depNext" aria-label="Próximo">
-      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-    <span class="dep-count" id="depCount">01 / 04</span>
+    <button class="dep-btn" id="depPrev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="dep-btn" id="depNext"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+    <span class="dep-count" id="depCount">01 / 01</span>
   </div>
 </section>
 
@@ -1199,76 +1440,25 @@ section { padding: 120px 48px; }
   <div class="parceria-header">
     <div class="section-eyebrow reveal">Parcerias</div>
     <h2 class="section-title reveal delay-1">Vamos construir<br><em>juntos.</em></h2>
-    <p class="parceria-lead reveal delay-2">Se você é arquiteto ou corretor e quer oferecer uma experiência de interiores de alto nível aos seus clientes, vamos conversar.</p>
+    <p class="parceria-lead reveal delay-2">Se você é arquiteto ou corretor, vamos conversar.</p>
   </div>
   <div class="parceria-grid reveal delay-3">
     <div class="parceria-card">
-      <div class="parceria-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#C4714A" stroke-width="1.5" stroke-linecap="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
-        </svg>
-      </div>
       <div class="parceria-card-title">Para<br>Arquitetos</div>
-      <ul class="parceria-list">
-        <li>Parceria em projetos de interiores complementares</li>
-        <li>Co-criação de conceito e apresentação ao cliente</li>
-        <li>Gestão integrada de fornecedores e execução</li>
-      </ul>
-      <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
-        Propor parceria
-      </button>
+      <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">Propor parceria</button>
     </div>
     <div class="parceria-card">
-      <div class="parceria-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#C4714A" stroke-width="1.5" stroke-linecap="round">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-      </div>
       <div class="parceria-card-title">Para<br>Corretores</div>
-      <ul class="parceria-list">
-        <li>Home staging para imóveis de alto padrão</li>
-        <li>Projeto de interiores como diferencial de venda</li>
-        <li>Comissão sobre projetos indicados</li>
-      </ul>
-      <button class="parceria-btn" onclick="document.querySelector('.parceria-form-wrap').scrollIntoView({behavior:'smooth'})">
-        Indicar cliente
-      </button>
+      <button class="parceria-btn" onclick="document.getElementById('brokerModal').classList.add('open')">Indicar cliente</button>
     </div>
   </div>
-
   <div class="parceria-form-wrap reveal">
     <div class="parceria-form-title">Envie uma mensagem</div>
-    <form class="parceria-form" id="contatoForm" onsubmit="submitForm(event)">
-      <div class="form-field">
-        <label class="form-label">Nome</label>
-        <input class="form-input" type="text" placeholder="Seu nome completo" required>
-      </div>
-      <div class="form-field">
-        <label class="form-label">E-mail</label>
-        <input class="form-input" type="email" placeholder="seu@email.com" required>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Telefone / WhatsApp</label>
-        <input class="form-input" type="tel" placeholder="(00) 00000-0000">
-      </div>
-      <div class="form-field">
-        <label class="form-label">Tipo de contato</label>
-        <select class="form-select">
-          <option value="">Selecione</option>
-          <option>Orçamento de projeto</option>
-          <option>Parceria — Arquiteto</option>
-          <option>Parceria — Corretor</option>
-          <option>Outros</option>
-        </select>
-      </div>
-      <div class="form-field full">
-        <label class="form-label">Mensagem</label>
-        <textarea class="form-textarea" placeholder="Conte sobre seu projeto ou proposta..."></textarea>
-      </div>
-      <button type="submit" class="form-submit">
-        <span>Enviar mensagem</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
+    <form class="parceria-form" id="contatoForm">
+      <div class="form-field"><label class="form-label">Nome</label><input class="form-input" type="text" required></div>
+      <div class="form-field"><label class="form-label">E-mail</label><input class="form-input" type="email" required></div>
+      <div class="form-field full"><label class="form-label">Mensagem</label><textarea class="form-textarea"></textarea></div>
+      <button type="submit" class="form-submit"><span>Enviar mensagem</span></button>
     </form>
   </div>
 </section>
@@ -1279,167 +1469,56 @@ section { padding: 120px 48px; }
     <div class="footer-logo-name">Briana Duranti</div>
     <div class="footer-logo-sub">Arquitetura de Interiores</div>
     <div class="footer-rule"></div>
-    <div class="footer-tagline">Espaços que traduzem a personalidade de quem os habita.</div>
-    <div class="footer-social" style="margin-top:24px">
-      <a href="#" title="Instagram">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      </a>
-      <a href="#" title="Pinterest">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.181-.78 1.172-4.97 1.172-4.97s-.299-.598-.299-1.482c0-1.388.806-2.428 1.808-2.428.853 0 1.267.64 1.267 1.408 0 .858-.546 2.14-.828 3.33-.236.995.499 1.806 1.476 1.806 1.772 0 3.137-1.867 3.137-4.562 0-2.387-1.715-4.054-4.163-4.054-2.837 0-4.5 2.128-4.5 4.328 0 .857.33 1.776.742 2.279a.3.3 0 01.069.284c-.076.312-.244.995-.277 1.134-.044.183-.146.222-.337.134-1.249-.581-2.03-2.407-2.03-3.874 0-3.154 2.292-6.052 6.608-6.052 3.469 0 6.165 2.473 6.165 5.776 0 3.447-2.173 6.22-5.19 6.22-1.013 0-1.966-.527-2.292-1.148l-.623 2.378c-.226.869-.835 1.958-1.244 2.621.937.29 1.931.446 2.962.446 5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
-      </a>
-      <a href="https://wa.me/5551992214957" title="WhatsApp">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-      </a>
-    </div>
   </div>
-  <div>
-    <div class="footer-col-title">Navegação</div>
-    <div class="footer-links">
-      <a href="#sobre">Sobre</a>
-      <a href="#portfolio">Projetos</a>
-      <a href="#processo">Processo</a>
-      <a href="#depoimentos">Clientes</a>
-    </div>
-  </div>
-  <div>
-    <div class="footer-col-title">Portfólio</div>
-    <div class="footer-links">
-      <a href="#portfolio">Lofts 24–40 m²</a>
-      <a href="#portfolio">Aptos 50–150 m²</a>
-      <a href="#portfolio">Acima de 150 m²</a>
-      <a href="#portfolio">Exclusivos</a>
-    </div>
-  </div>
-  <div>
-    <div class="footer-col-title">Contato</div>
-    <div class="footer-links">
-      <a href="mailto:briana.designerinteriores@gmail.com">briana.designerinteriores@gmail.com</a>
-      <a href="https://wa.me/5551992214957">WhatsApp</a>
-      <a href="#parceria">Parcerias</a>
-    </div>
-  </div>
+  <div><div class="footer-col-title">Navegação</div><div class="footer-links"><a href="#sobre">Sobre</a><a href="#portfolio">Projetos</a></div></div>
+  <div><div class="footer-col-title">Contato</div><div class="footer-links"><a href="mailto:briana.designerinteriores@gmail.com">E-mail</a><a href="https://wa.me/5551992214957">WhatsApp</a></div></div>
 </footer>
 <div class="footer-bottom">
-  <span class="footer-copy">© 2025 Briana Duranti. Todos os direitos reservados.</span>
+  <span class="footer-copy">© 2025 Briana Duranti.</span>
   <a href="#" class="footer-admin-link" onclick="openAdmin(event)">Admin</a>
-</div>
-
-<!-- MODAL PROJETO -->
-<div class="modal-overlay" id="projectModal">
-  <div class="modal-box">
-    <div class="modal-imgs">
-      <img class="modal-img-main" id="modalImg" src="" alt="">
-      <button class="modal-close" onclick="closeModal()">ÃÂ</button>
-    </div>
-    <div class="modal-info">
-      <div class="modal-cat" id="modalCat"></div>
-      <div class="modal-title" id="modalTitle"></div>
-      <div class="modal-rule"></div>
-      <div class="modal-desc" id="modalDesc"></div>
-    </div>
-  </div>
 </div>
 
 <!-- ADMIN OVERLAY -->
 <div id="admin-overlay">
-  <!-- Login -->
   <div class="admin-login" id="adminLogin">
     <div class="admin-login-box">
       <div class="admin-login-title">Painel Admin</div>
-      <div class="admin-login-sub">Briana Duranti Studio</div>
-      <div class="form-field" style="margin-bottom:12px">
-        <label class="admin-label" style="color:rgba(196,184,174,0.4)">Senha</label>
-        <input class="admin-input" type="password" id="adminPwd" placeholder="Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢Ã¢ÂÂ¢" onkeydown="if(event.key==='Enter')checkLogin()">
-      </div>
+      <input class="admin-input" type="password" id="adminPwd" placeholder="Senha">
       <button class="admin-save" onclick="checkLogin()">Entrar</button>
-      <div class="admin-login-error" id="loginError">Senha incorreta.</div>
     </div>
   </div>
-
-  <!-- Panel -->
   <div class="admin-panel" id="adminPanel" style="display:none">
     <div class="admin-header">
-      <div class="admin-title">Painel Admin</div>
-      <button class="admin-close" onclick="closeAdmin()">Fechar ÃÂ</button>
+      <div class="admin-title">Painel Admin — Briana Duranti Studio</div>
+      <button class="admin-close" onclick="closeAdmin()">Fechar ×</button>
     </div>
     <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchTab('projetos',this)">Projetos</button>
-      <button class="admin-tab" onclick="switchTab('depoimentos',this)">Depoimentos</button>
-      <button class="admin-tab" onclick="switchTab('parcerias',this)">Parcerias</button>
+      <button class="admin-tab active" onclick="switchTab('crm',this)">CRM — Leads</button>
+      <button class="admin-tab" onclick="switchTab('projetos',this)">Projetos</button>
     </div>
-
-    <!-- Projetos -->
-    <div class="admin-section active" id="tab-projetos">
+    <div class="admin-section active" id="tab-crm">
+      <div class="crm-toolbar">
+        <input class="crm-filter-input" id="crmSearch" placeholder="Buscar..." oninput="renderCRM()">
+        <button class="crm-add-btn" onclick="openAddLeadForm()">+ Adicionar Lead</button>
+      </div>
+      <div class="crm-table-wrap">
+        <table class="crm-table">
+          <thead><tr><th>Data</th><th>Cliente</th><th>WhatsApp</th><th>Corretor</th><th>Estágio</th><th>Ações</th></tr></thead>
+          <tbody id="crmTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="admin-section" id="tab-projetos">
       <div class="admin-form">
-        <div class="admin-form-title">Adicionar / Editar Projeto</div>
+        <div class="admin-form-title">Adicionar Projeto</div>
         <div class="admin-grid">
-          <div class="admin-field">
-            <label class="admin-label">TÃÂ­tulo do projeto</label>
-            <input class="admin-input" id="pTitulo" placeholder="Ex: Loft Jardins">
-          </div>
-          <div class="admin-field">
-            <label class="admin-label">Categoria</label>
-            <select class="admin-select" id="pCat">
-              <option value="lofts">Lofts 24Ã¢ÂÂ40 mÃ²</option>
-              <option value="aptos">Aptos 50Ã¢ÂÂ150 mÃ²</option>
-              <option value="grandes">Acima de 150 mÃ²</option>
-              <option value="exclusivos">Ambientes Exclusivos</option>
-            </select>
-          </div>
-          <div class="admin-field">
-            <label class="admin-label">URL da imagem</label>
-            <input class="admin-input" id="pImg" placeholder="https://...">
-          </div>
-          <div class="admin-field">
-            <label class="admin-label">ÃÂrea (mÃ²)</label>
-            <input class="admin-input" id="pArea" placeholder="Ex: 78 mÃ²">
-          </div>
-          <div class="admin-field span2">
-            <label class="admin-label">DescriÃÂ§ÃÂ£o</label>
-            <textarea class="admin-textarea" id="pDesc" placeholder="Descreva o projeto..."></textarea>
-          </div>
+          <input class="admin-input" id="pTitulo" placeholder="Título">
+          <input class="admin-input" id="pImg" placeholder="URL Imagem">
         </div>
-        <button class="admin-save" onclick="saveProject()">Salvar Projeto</button>
+        <button class="admin-save" onclick="saveProject()">Salvar</button>
       </div>
       <div class="admin-list" id="projectList"></div>
     </div>
-
-    <!-- Depoimentos -->
-    <div class="admin-section" id="tab-depoimentos">
-      <div class="admin-form">
-        <div class="admin-form-title">Adicionar Depoimento</div>
-        <div class="admin-grid">
-          <div class="admin-field">
-            <label class="admin-label">Nome do cliente</label>
-            <input class="admin-input" id="dNome" placeholder="Nome completo">
-          </div>
-          <div class="admin-field">
-            <label class="admin-label">Projeto</label>
-            <input class="admin-input" id="dProjeto" placeholder="Ex: Apartamento 82 mÃ², SP">
-          </div>
-          <div class="admin-field span2">
-            <label class="admin-label">Depoimento</label>
-            <textarea class="admin-textarea" id="dTexto" placeholder="O que o cliente disse..."></textarea>
-          </div>
-          <div class="admin-field">
-            <label class="admin-label">Tipo</label>
-            <select class="admin-select" id="dTipo">
-              <option>Loft</option>
-              <option>Residencial</option>
-              <option>Alto PadrÃÂ£o</option>
-              <option>Exclusivo</option>
-            </select>
-          </div>
-        </div>
-        <button class="admin-save" onclick="saveDepoimento()">Salvar Depoimento</button>
-      </div>
-      <div class="admin-list" id="depList"></div>
-    </div>
-
-    <!-- Parcerias -->
-    <div class="admin-section" id="tab-parcerias">
-      <div class="admin-form-title" style="color:var(--cinza);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;font-weight:300;margin-bottom:20px">SolicitaÃÂ§ÃÂµes recebidas</div>
-      <div class="admin-list" id="parcList">
         <div class="admin-list-item">
           <div class="admin-list-info">
             <div class="admin-list-name">FormulÃÂ¡rio de parceria ativo</div>
@@ -1447,257 +1526,283 @@ section { padding: 120px 48px; }
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
 <script>
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ CURSOR Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── SUPABASE INIT ───
+let sb = null;
+try {
+  if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_ANON_KEY !== 'undefined') {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch(e) { console.warn('Supabase nao configurado:', e); }
+
+// ─── CURSOR ───
 const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
+const ring   = document.getElementById('cursorRing');
 let mx = 0, my = 0, rx = 0, ry = 0;
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
-  cursor.style.left = mx + 'px';
-  cursor.style.top = my + 'px';
+  cursor.style.left = mx+'px'; cursor.style.top = my+'px';
 });
 function animRing() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px';
-  ring.style.top = ry + 'px';
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
   requestAnimationFrame(animRing);
 }
 animRing();
-document.querySelectorAll('a, button, .cat-card').forEach(el => {
+document.querySelectorAll('a,button,.cat-card').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
 });
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ NAVBAR SCROLL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── NAVBAR ───
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ MOBILE MENU Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-document.getElementById('hamburger').addEventListener('click', () => {
-  document.getElementById('mobileMenu').classList.add('open');
-});
-document.getElementById('mobileClose').addEventListener('click', closeMobile);
-function closeMobile() {
-  document.getElementById('mobileMenu').classList.remove('open');
-}
+// ─── MOBILE MENU ───
+document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileMenu').classList.add('open'));
+document.getElementById('mobileClose').addEventListener('click', () => document.getElementById('mobileMenu').classList.remove('open'));
+function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ REVEAL ON SCROLL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-const reveals = document.querySelectorAll('.reveal');
-const revObs = new IntersectionObserver((entries) => {
+// ─── REVEAL ON SCROLL ───
+const revObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.12 });
-reveals.forEach(el => revObs.observe(el));
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ DEPOIMENTOS CAROUSEL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── DEPOIMENTOS CAROUSEL ───
 let depIdx = 0;
 const depCards = document.querySelectorAll('.dep-card');
 const total = depCards.length;
 function updateDep() {
-  const isMobile = window.innerWidth <= 900;
-  const w = isMobile ? 100 : 50;
-  document.getElementById('depTrack').style.transform = `translateX(-${depIdx * w}%)`;
-  document.getElementById('depCount').textContent =
-    String(depIdx + 1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+  const w = window.innerWidth <= 900 ? 100 : 50;
+  document.getElementById('depTrack').style.transform = `translateX(-${depIdx*w}%)`;
+  document.getElementById('depCount').textContent = String(depIdx+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
 }
-document.getElementById('depNext').addEventListener('click', () => {
-  depIdx = (depIdx + 1) % total; updateDep();
-});
-document.getElementById('depPrev').addEventListener('click', () => {
-  depIdx = (depIdx - 1 + total) % total; updateDep();
+document.getElementById('depNext').addEventListener('click', () => { depIdx=(depIdx+1)%total; updateDep(); });
+document.getElementById('depPrev').addEventListener('click', () => { depIdx=(depIdx-1+total)%total; updateDep(); });
+let touchX = 0;
+document.querySelector('.dep-track-wrap').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
+document.querySelector('.dep-track-wrap').addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) { depIdx = diff>0 ? (depIdx+1)%total : (depIdx-1+total)%total; updateDep(); }
 });
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PORTFOLIO MODAL Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-const catData = {
-  lofts: {
-    title: 'Lofts Boutique',
-    tag: 'Lofts Ã· 24 Ã¢ÂÂ 40 mÃ²',
-    img: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&q=80',
-    desc: 'Projetos de lofts compactos onde cada centÃÂ­metro ÃÂ© pensado para ampliar a sensaÃÂ§ÃÂ£o de espaÃÂ§o sem abrir mÃÂ£o do conforto e da personalidade. SoluÃÂ§ÃÂµes de mobiliÃÂ¡rio integrado, iluminaÃÂ§ÃÂ£o estratÃÂ©gica e paletas que fazem o espaÃÂ§o respirar.'
-  },
-  aptos: {
-    title: 'Apartamentos Residenciais',
-    tag: 'Apartamentos Ã· 50 Ã¢ÂÂ 150 mÃ²',
-    img: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=1200&q=80',
-    desc: 'A faixa mais versÃÂ¡til do portfÃÂ³lio. Apartamentos que equilibram funcionalidade para o dia a dia com a sofisticaÃÂ§ÃÂ£o que o cliente deseja. Da planta livre ao layout compartimentado, cada projeto nasce do modo de vida de quem habita.'
-  },
-  grandes: {
-    title: 'Casas & Grandes Apartamentos',
-    tag: 'Acima de 150 mÃ²',
-    img: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=1200&q=80',
-    desc: 'Projetos de grande porte que exigem orquestraÃÂ§ÃÂ£o de mÃÂºltiplos ambientes, gestÃÂ£o de fornecedores especializados e atenÃÂ§ÃÂ£o milimÃÂ©trica a cada detalhe. ResidÃÂªncias que sÃÂ£o patrimÃÂ´nio Ã¢ÂÂ projetadas para durar geraÃÂ§ÃÂµes.'
-  },
-  exclusivos: {
-    title: 'Ambientes Exclusivos',
-    tag: 'Alta Exclusividade',
-    img: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1200&q=80',
-    desc: 'Para clientes que buscam o que nÃÂ£o existe pronto. Materiais especiais, peÃÂ§as ÃÂºnicas, soluÃÂ§ÃÂµes sob medida em cada detalhe. Projetos onde o processo ÃÂ© tÃÂ£o importante quanto o resultado Ã¢ÂÂ uma experiÃÂªncia de criaÃÂ§ÃÂ£o compartilhada.'
-  }
-};
-document.querySelectorAll('.cat-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const cat = card.dataset.cat;
-    const d = catData[cat];
-    document.getElementById('modalImg').src = d.img;
-    document.getElementById('modalCat').textContent = d.tag;
-    document.getElementById('modalTitle').textContent = d.title;
-    document.getElementById('modalDesc').textContent = d.desc;
-    document.getElementById('projectModal').classList.add('open');
-  });
-});
-function closeModal() {
-  document.getElementById('projectModal').classList.remove('open');
-}
-document.getElementById('projectModal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
-
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ FORM Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-function submitForm(e) {
-  e.preventDefault();
-  const btn = e.target.querySelector('.form-submit span');
-  btn.textContent = 'Mensagem enviada Ã¢ÂÂ';
-  setTimeout(() => { btn.textContent = 'Enviar mensagem'; }, 3000);
-}
-
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ ADMIN Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ─── ADMIN ───
 let adminLoggedIn = false;
 const ADMIN_PWD = 'briana2025';
-
 function openAdmin(e) {
   e.preventDefault();
   document.getElementById('admin-overlay').classList.add('open');
   if (adminLoggedIn) {
     document.getElementById('adminLogin').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
+    loadLeads(); loadProjects();
   }
-  renderProjectList();
-  renderDepList();
 }
-function closeAdmin() {
-  document.getElementById('admin-overlay').classList.remove('open');
-}
+function closeAdmin() { document.getElementById('admin-overlay').classList.remove('open'); }
 function checkLogin() {
-  const pwd = document.getElementById('adminPwd').value;
-  if (pwd === ADMIN_PWD) {
+  if (document.getElementById('adminPwd').value === ADMIN_PWD) {
     adminLoggedIn = true;
     document.getElementById('adminLogin').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
-    renderProjectList();
-    renderDepList();
+    loadLeads(); loadProjects();
   } else {
-    document.getElementById('loginError').classList.add('show');
-    setTimeout(() => document.getElementById('loginError').classList.remove('show'), 2500);
+    document.getElementById('adminPwd').style.borderColor = '#c0392b';
+    setTimeout(() => document.getElementById('adminPwd').style.borderColor='', 2000);
   }
 }
+document.getElementById('adminPwd').addEventListener('keydown', e => { if(e.key==='Enter') checkLogin(); });
 function switchTab(name, btn) {
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if (name==='crm') loadLeads();
+  if (name==='projetos') loadProjects();
 }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ PROJECTS CRUD Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-let projects = JSON.parse(localStorage.getItem('bd_projects') || '[]');
-let depoimentos = JSON.parse(localStorage.getItem('bd_depoimentos') || '[]');
-
-function saveProject() {
-  const p = {
-    id: Date.now(),
-    titulo: document.getElementById('pTitulo').value,
-    cat: document.getElementById('pCat').value,
-    img: document.getElementById('pImg').value,
-    area: document.getElementById('pArea').value,
-    desc: document.getElementById('pDesc').value
+// ─── CRM — LEADS ───
+let allLeads = [];
+async function loadLeads() {
+  const tbody = document.getElementById('crmTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(196,184,174,0.3);padding:30px">Carregando...</td></tr>';
+  if (!sb) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#e67e22;padding:30px;font-family:\'Jost\',sans-serif;font-size:11px;letter-spacing:2px">Configure o Supabase para ver os leads.</td></tr>'; return; }
+  const { data, error } = await sb.from('leads').select('*').order('created_at', { ascending: false });
+  if (error) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#c0392b;padding:30px">Erro: ${error.message}</td></tr>`; return; }
+  allLeads = data || []; renderCRM();
+}
+function renderCRM() {
+  const search = (document.getElementById('crmSearch')?.value||'').toLowerCase();
+  const fs = document.getElementById('crmFilterStatus')?.value||'';
+  let leads = allLeads.filter(l => {
+    const mt = !search||(l.client_name||'').toLowerCase().includes(search)||(l.broker_name||'').toLowerCase().includes(search);
+    const ms = !fs||l.status===fs;
+    return mt&&ms;
+  });
+  const tbody = document.getElementById('crmTableBody');
+  if (!leads.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:rgba(196,184,174,0.25);padding:40px;font-family:\'Jost\',sans-serif;font-size:11px;letter-spacing:3px">NENHUM LEAD ENCONTRADO</td></tr>'; return; }
+  const sl = {briefing:'Briefing',apresentacao:'Apresentacao',financeiro:'Financeiro',medicao:'Medicao',conferencia:'Conferencia',acompanhamento:'Acompanhamento',vistoria:'Vistoria',entrega:'Entrega'};
+  tbody.innerHTML = leads.map(l=>`
+    <tr>
+      <td style="white-space:nowrap;color:rgba(196,184,174,0.5);font-size:11px">${new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+      <td><strong style="font-weight:400">${l.client_name||'-'}</strong>${l.notes?`<br><small style="color:rgba(196,184,174,0.35);font-size:10px">${l.notes}</small>`:''}</td>
+      <td>${l.client_whatsapp?`<a href="https://wa.me/55${l.client_whatsapp.replace(/\D/g,'')}" target="_blank" style="color:var(--terra);text-decoration:none">${l.client_whatsapp}</a>`:'-'}</td>
+      <td style="font-size:12px;color:rgba(196,184,174,0.6)">${l.broker_name||'<em style="opacity:.4">Manual</em>'}</td>
+      <td><select class="crm-status-select" onchange="updateLeadStatus('${l.id}',this.value)">${Object.entries(sl).map(([v,t])=>`<option value="${v}"${l.status===v?' selected':''}>${t}</option>`).join('')}</select></td>
+      <td><button class="admin-action-btn del" onclick="deleteLead('${l.id}')">Remover</button></td>
+    </tr>`).join('');
+}
+async function updateLeadStatus(id, status) {
+  if (!sb) return;
+  await sb.from('leads').update({status}).eq('id',id);
+  const l = allLeads.find(x=>x.id===id); if(l) l.status=status;
+}
+async function deleteLead(id) {
+  if (!confirm('Remover este lead?')) return;
+  if (sb) await sb.from('leads').delete().eq('id',id);
+  allLeads = allLeads.filter(l=>l.id!==id); renderCRM();
+}
+function openAddLeadForm() {
+  const f = document.getElementById('addLeadForm');
+  if (f) f.style.display = f.style.display==='none'?'block':'none';
+}
+async function saveLead() {
+  const data = {
+    client_name: document.getElementById('lClientName').value.trim(),
+    client_whatsapp: document.getElementById('lClientWa').value.trim(),
+    broker_name: document.getElementById('lBrokerName').value.trim(),
+    broker_whatsapp: document.getElementById('lBrokerWa').value.trim(),
+    status: document.getElementById('lStatus').value,
+    notes: document.getElementById('lNotes').value.trim()
   };
-  if (!p.titulo) return;
-  projects.push(p);
-  localStorage.setItem('bd_projects', JSON.stringify(projects));
-  ['pTitulo','pImg','pArea','pDesc'].forEach(id => document.getElementById(id).value = '');
+  if (!data.client_name) { alert('Informe o nome do cliente.'); return; }
+  if (!sb) { alert('Supabase nao configurado.'); return; }
+  const { error } = await sb.from('leads').insert([data]);
+  if (error) { alert('Erro: '+error.message); return; }
+  ['lClientName','lClientWa','lBrokerName','lBrokerWa','lNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('addLeadForm').style.display='none';
+  loadLeads();
+}
+async function importCRMExcel(event) {
+  const file = event.target.files[0];
+  if (!file||!sb) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const wb = XLSX.read(e.target.result,{type:'binary'});
+    const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+    const leads = rows.map(r=>({
+      client_name: r['Nome']||r['nome']||r['Cliente']||r['cliente']||'',
+      client_whatsapp: String(r['WhatsApp']||r['whatsapp']||r['Telefone']||r['telefone']||''),
+      broker_name: r['Corretor']||r['corretor']||'',
+      broker_whatsapp: String(r['WhatsApp Corretor']||r['whatsapp_corretor']||''),
+      status:'briefing'
+    })).filter(l=>l.client_name);
+    if (!leads.length) { alert('Nenhum lead encontrado. Use coluna "Nome".'); return; }
+    const {error} = await sb.from('leads').insert(leads);
+    if (error) { alert('Erro: '+error.message); return; }
+    alert('✓ '+leads.length+' lead(s) importado(s)!');
+    loadLeads();
+  };
+  reader.readAsBinaryString(file);
+  event.target.value='';
+}
+
+// ─── PROJETOS ───
+let projects = [];
+async function loadProjects() {
+  if (sb) { const {data}=await sb.from('projects').select('*').order('created_at',{ascending:false}); projects=data||[]; }
+  else { projects=JSON.parse(localStorage.getItem('bd_projects')||'[]'); }
   renderProjectList();
 }
-function deleteProject(id) {
-  if (!confirm('Remover este projeto?')) return;
-  projects = projects.filter(p => p.id !== id);
-  localStorage.setItem('bd_projects', JSON.stringify(projects));
-  renderProjectList();
+async function saveProject() {
+  const p = {
+    title: (document.getElementById('pTitulo')?.value||'').trim(),
+    image_url: (document.getElementById('pImg')?.value||'').trim(),
+    category: document.getElementById('pCat')?.value||'lofts',
+    area: document.getElementById('pArea')?.value||'',
+    description: document.getElementById('pDesc')?.value||''
+  };
+  if (!p.title) return;
+  if (sb) { await sb.from('projects').insert([p]); loadProjects(); }
+  else { projects.push({...p,id:Date.now()}); localStorage.setItem('bd_projects',JSON.stringify(projects)); renderProjectList(); }
+  ['pTitulo','pImg','pArea','pDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+async function deleteProject(id) {
+  if (!confirm('Remover?')) return;
+  if (sb) { await sb.from('projects').delete().eq('id',id); loadProjects(); }
+  else { projects=projects.filter(p=>String(p.id)!==String(id)); localStorage.setItem('bd_projects',JSON.stringify(projects)); renderProjectList(); }
 }
 function renderProjectList() {
   const list = document.getElementById('projectList');
   if (!list) return;
-  if (!projects.length) {
-    list.innerHTML = '<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0;font-family:\'DM Sans\',sans-serif;font-weight:300">Nenhum projeto cadastrado.</div>';
-    return;
-  }
-  list.innerHTML = projects.map(p => `
-    <div class="admin-list-item">
-      <div class="admin-list-info">
-        <div class="admin-list-name">${p.titulo}</div>
-        <div class="admin-list-meta">${p.cat} Ã· ${p.area}</div>
-      </div>
-      <div class="admin-list-actions">
-        <button class="admin-action-btn del" onclick="deleteProject(${p.id})">Remover</button>
-      </div>
-    </div>
-  `).join('');
-}
-function saveDepoimento() {
-  const d = {
-    id: Date.now(),
-    nome: document.getElementById('dNome').value,
-    projeto: document.getElementById('dProjeto').value,
-    texto: document.getElementById('dTexto').value,
-    tipo: document.getElementById('dTipo').value
-  };
-  if (!d.nome) return;
-  depoimentos.push(d);
-  localStorage.setItem('bd_depoimentos', JSON.stringify(depoimentos));
-  ['dNome','dProjeto','dTexto'].forEach(id => document.getElementById(id).value = '');
-  renderDepList();
-}
-function deleteDepoimento(id) {
-  if (!confirm('Remover este depoimento?')) return;
-  depoimentos = depoimentos.filter(d => d.id !== id);
-  localStorage.setItem('bd_depoimentos', JSON.stringify(depoimentos));
-  renderDepList();
-}
-function renderDepList() {
-  const list = document.getElementById('depList');
-  if (!list) return;
-  if (!depoimentos.length) {
-    list.innerHTML = '<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0;font-family:\'DM Sans\',sans-serif;font-weight:300">Nenhum depoimento cadastrado.</div>';
-    return;
-  }
-  list.innerHTML = depoimentos.map(d => `
-    <div class="admin-list-item">
-      <div class="admin-list-info">
-        <div class="admin-list-name">${d.nome}</div>
-        <div class="admin-list-meta">${d.projeto} Ã· ${d.tipo}</div>
-      </div>
-      <div class="admin-list-actions">
-        <button class="admin-action-btn del" onclick="deleteDepoimento(${d.id})">Remover</button>
-      </div>
-    </div>
-  `).join('');
+  if (!projects.length) { list.innerHTML='<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0">Nenhum projeto cadastrado.</div>'; return; }
+  list.innerHTML = projects.map(p=>`<div class="admin-list-item"><div class="admin-list-info"><div class="admin-list-name">${p.title||p.titulo}</div><div class="admin-list-meta">${p.category||p.cat||''}</div></div><div class="admin-list-actions"><button class="admin-action-btn del" onclick="deleteProject('${p.id}')">Remover</button></div></div>`).join('');
 }
 
-// Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ TOUCH SWIPE depoimentos Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂ
-let touchX = 0;
-document.querySelector('.dep-track-wrap').addEventListener('touchstart', e => { touchX = e.touches[0].clientX; });
-document.querySelector('.dep-track-wrap').addEventListener('touchend', e => {
-  const diff = touchX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) { depIdx = (depIdx + 1) % total; }
-    else { depIdx = (depIdx - 1 + total) % total; }
-    updateDep();
+// ─── BROKER MODAL ───
+let brokerDataSaved = {name:'',whatsapp:''};
+function closeBrokerModal() {
+  document.getElementById('brokerModal').classList.remove('open');
+  document.getElementById('brokerSuccessMsg').style.display='none';
+  document.getElementById('brokerFormContent').style.display='block';
+  ['bClientName','bClientWa'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const fs=document.getElementById('bFileStatus');if(fs)fs.textContent='';
+}
+async function submitBrokerReferral() {
+  const bn=document.getElementById('bBrokerName').value.trim();
+  const bw=document.getElementById('bBrokerWa').value.trim();
+  const cn=document.getElementById('bClientName').value.trim();
+  const cw=document.getElementById('bClientWa').value.trim();
+  const fi=document.getElementById('bFileInput');
+  if (!bn||!cn) { alert('Preencha seu nome e o nome do cliente.'); return; }
+  brokerDataSaved={name:bn,whatsapp:bw};
+  if (fi.files.length>0) {
+    const file=fi.files[0];
+    if (file.name.match(/\.xlsx?$/i)) await processBrokerExcel(file,bn,bw);
+    else await insertLead({broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,notes:'Arquivo PDF enviado',status:'briefing'});
+  } else {
+    await insertLead({broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,status:'briefing'});
   }
-});
+  notifyWhatsApp(bn,cn,cw);
+  document.getElementById('brokerFormContent').style.display='none';
+  document.getElementById('brokerSuccessMsg').style.display='block';
+  setTimeout(closeBrokerModal,3000);
+}
+async function processBrokerExcel(file,bn,bw) {
+  return new Promise(resolve=>{
+    const reader=new FileReader();
+    reader.onload=async e=>{
+      const wb=XLSX.read(e.target.result,{type:'binary'});
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+      const leads=rows.map(r=>({client_name:r['Nome']||r['nome']||r['Cliente']||'',client_whatsapp:String(r['WhatsApp']||r['whatsapp']||r['Telefone']||''),broker_name:bn,broker_whatsapp:bw,status:'briefing'})).filter(l=>l.client_name);
+      if (leads.length&&sb) await sb.from('leads').insert(leads);
+      resolve();
+    };
+    reader.readAsBinaryString(file);
+  });
+}
+async function insertLead(data) { if(sb) await sb.from('leads').insert([data]); }
+function brokerAddMore() {
+  document.getElementById('bBrokerName').value=brokerDataSaved.name;
+  document.getElementById('bBrokerWa').value=brokerDataSaved.whatsapp;
+  ['bClientName','bClientWa'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const fi=document.getElementById('bFileInput');if(fi)fi.value='';
+  const fs=document.getElementById('bFileStatus');if(fs)fs.textContent='';
+}
+const bFileEl=document.getElementById('bFileInput');
+if(bFileEl) bFileEl.addEventListener('change',e=>{const f=e.target.files[0];const s=document.getElementById('bFileStatus');if(s)s.textContent=f?'Arquivo: '+f.name:'';});
+
+// ─── WHATSAPP NOTIFY ───
+function notifyWhatsApp(brokerName,clientName,clientWa) {
+  const numero='5551992214957';
+  const msg=encodeURIComponent('Nova indicacao recebida!\n\nCorretor: '+brokerName+'\nCliente: '+clientName+'\nWhatsApp do cliente: '+(clientWa||'nao informado')+'\n\nAcesse o painel admin para gerenciar este lead.');
+  window.open('https://wa.me/'+numero+'?text='+msg,'_blank');
+}
+
+// ─── INIT ───
+loadProjects();
 </script>
 </body>
 </html>
