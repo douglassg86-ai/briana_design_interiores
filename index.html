@@ -61,9 +61,10 @@ button { font-family: inherit; cursor: none; }
   font-family: 'Jost', sans-serif;
   font-size: 7px; letter-spacing: 4px;
   text-transform: uppercase; color: rgba(196,184,174,0.35);
-  font-weight: 300; padding: 10px 12px; text-align: left;
+  font-weight: 300; padding: 8px 12px; text-align: left;
   border-bottom: 0.5px solid rgba(196,184,174,0.1);
 }
+.table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
 .crm-table td {
   padding: 14px 12px;
   font-size: 13px; color: var(--linho);
@@ -236,18 +237,20 @@ button { font-family: inherit; cursor: none; }
 /* ─── CUSTOM CURSOR ─── */
 .cursor {
   width: 8px; height: 8px;
-  background: var(--chumbo);
+  background: #ffffff;
+  mix-blend-mode: difference;
   border-radius: 50%;
   position: fixed; top: 0; left: 0;
   pointer-events: none; z-index: 9999;
   transform: translate(-50%, -50%);
   transition: transform 0.1s, width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
 }
-.cursor.grow { width: 40px; height: 40px; background: transparent; border: 0.5px solid var(--chumbo); }
-.cursor.terra { background: var(--terra); }
+.cursor.grow { width: 40px; height: 40px; background: transparent; border: 0.5px solid #ffffff; mix-blend-mode: difference; }
+.cursor.terra { background: var(--terra); mix-blend-mode: normal; }
 .cursor-ring {
   width: 32px; height: 32px;
-  border: 0.5px solid var(--chumbo);
+  border: 0.5px solid #ffffff;
+  mix-blend-mode: difference;
   border-radius: 50%;
   position: fixed; top: 0; left: 0;
   pointer-events: none; z-index: 9998;
@@ -895,109 +898,6 @@ section { padding: 120px 48px; }
 .whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.45); }
 .whatsapp-fab svg { width: 26px; height: 26px; fill: white; }
 
-/* ─── MODAL INDICAÇÃO CORRETOR ─── */
-.broker-modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(28,28,28,0.92); z-index: 400;
-  align-items: center; justify-content: center;
-  padding: 24px;
-}
-.broker-modal-overlay.open { display: flex; }
-.broker-modal-box {
-  background: var(--chumbo2);
-  border: 0.5px solid rgba(196,184,174,0.12);
-  padding: 48px; max-width: 520px; width: 100%;
-  position: relative;
-}
-.broker-modal-title {
-  font-family: 'DM Serif Display', serif;
-  font-style: italic; font-size: 28px;
-  color: var(--linho); margin-bottom: 6px;
-}
-.broker-modal-sub {
-  font-family: 'Jost', sans-serif;
-  font-size: 8px; letter-spacing: 4px;
-  text-transform: uppercase; color: var(--cinza);
-  font-weight: 200; margin-bottom: 32px;
-}
-.broker-modal-close {
-  position: absolute; top: 20px; right: 24px;
-  background: none; border: none;
-  font-family: 'Jost', sans-serif;
-  font-size: 9px; letter-spacing: 3px;
-  text-transform: uppercase; color: rgba(196,184,174,0.3);
-  font-weight: 200; transition: color 0.3s;
-}
-.broker-modal-close:hover { color: var(--terra); }
-.broker-section-label {
-  font-family: 'Jost', sans-serif; font-size: 7px;
-  letter-spacing: 5px; text-transform: uppercase;
-  color: var(--terra); font-weight: 200;
-  margin-bottom: 12px; margin-top: 24px;
-  display: flex; align-items: center; gap: 10px;
-}
-.broker-section-label::before {
-  content: ''; width: 20px; height: 0.5px; background: var(--terra);
-}
-.broker-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.broker-form-grid.single { grid-template-columns: 1fr; }
-.broker-field { display: flex; flex-direction: column; gap: 5px; }
-.broker-label {
-  font-family: 'Jost', sans-serif; font-size: 7px;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(196,184,174,0.35); font-weight: 200;
-}
-.broker-input {
-  background: rgba(255,255,255,0.04);
-  border: 0.5px solid rgba(196,184,174,0.15);
-  padding: 10px 14px; color: var(--linho);
-  font-family: 'DM Sans', sans-serif; font-size: 13px;
-  font-weight: 300; outline: none; width: 100%;
-  transition: border-color 0.3s;
-}
-.broker-input:focus { border-color: var(--terra); }
-.broker-input::placeholder { color: rgba(196,184,174,0.2); }
-.broker-divider {
-  border: none; border-top: 0.5px solid rgba(196,184,174,0.1);
-  margin: 24px 0 0;
-}
-.broker-actions {
-  display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;
-}
-.broker-submit {
-  flex: 1; padding: 14px 24px; background: var(--terra); border: none;
-  font-family: 'Jost', sans-serif; font-size: 9px;
-  letter-spacing: 4px; text-transform: uppercase;
-  color: var(--linho); font-weight: 300;
-  transition: background 0.3s;
-}
-.broker-submit:hover { background: var(--terra2); }
-.broker-add-more {
-  padding: 14px 24px; background: none;
-  border: 0.5px solid rgba(196,184,174,0.2);
-  font-family: 'Jost', sans-serif; font-size: 9px;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: var(--cinza); font-weight: 200;
-  transition: border-color 0.3s, color 0.3s; white-space: nowrap;
-}
-.broker-add-more:hover { border-color: var(--terra); color: var(--terra); }
-.broker-file-label {
-  display: flex; align-items: center; gap: 10px;
-  border: 0.5px dashed rgba(196,184,174,0.2);
-  padding: 14px 20px; cursor: pointer;
-  transition: border-color 0.3s;
-  font-family: 'Jost', sans-serif; font-size: 8px;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(196,184,174,0.3); font-weight: 200;
-}
-.broker-file-label:hover { border-color: var(--terra); color: var(--terra); }
-.broker-file-input { display: none; }
-.broker-success {
-  display: none; text-align: center; padding: 20px 0;
-  font-family: 'DM Serif Display', serif;
-  font-style: italic; font-size: 22px; color: var(--terra);
-}
-
 /* ─── ADMIN ─── */
 #admin-overlay {
   display: none; position: fixed; inset: 0;
@@ -1259,6 +1159,15 @@ section { padding: 120px 48px; }
       <div class="broker-form-grid">
         <div class="broker-field"><label class="broker-label">Nome do cliente</label><input class="broker-input" id="bClientName" placeholder="Nome completo"></div>
         <div class="broker-field"><label class="broker-label">WhatsApp do cliente</label><input class="broker-input" id="bClientWa" placeholder="(51) 99999-9999" type="tel"></div>
+        <div class="broker-field" style="grid-column: 1 / -1"><label class="broker-label">Categoria de Projeto</label>
+          <select class="broker-input form-select" id="bCategory">
+            <option value="">Selecione...</option>
+            <option value="Lofts Boutique (24 — 40 m²)">Lofts Boutique (24 — 40 m²)</option>
+            <option value="Apartamentos Residenciais (50 — 150 m²)">Apartamentos Residenciais (50 — 150 m²)</option>
+            <option value="Casas & Grandes Aptos (Acima de 150 m²)">Casas & Grandes Aptos (Acima de 150 m²)</option>
+            <option value="Ambientes Exclusivos (Alta Exclusividade)">Ambientes Exclusivos (Alta Exclusividade)</option>
+          </select>
+        </div>
       </div>
       <div class="broker-section-label" style="margin-top:28px">Tem muitos clientes? Envie uma lista</div>
       <label class="broker-file-label" for="bFileInput">
@@ -1493,6 +1402,7 @@ section { padding: 120px 48px; }
     </div>
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('crm',this)">CRM — Leads</button>
+      <button class="admin-tab" onclick="switchTab('dashboard',this)">Métricas</button>
       <button class="admin-tab" onclick="switchTab('projetos',this)">Projetos</button>
     </div>
     <div class="admin-section active" id="tab-crm">
@@ -1500,10 +1410,50 @@ section { padding: 120px 48px; }
         <input class="crm-filter-input" id="crmSearch" placeholder="Buscar..." oninput="renderCRM()">
         <button class="crm-add-btn" onclick="openAddLeadForm()">+ Adicionar Lead</button>
       </div>
-      <div class="crm-table-wrap">
+
+      <div class="broker-form-grid" id="addLeadForm" style="display:none; padding:15px; border:0.5px solid rgba(196,184,174,0.3); border-radius:4px; margin-bottom:20px;">
+        <div class="broker-field"><label class="broker-label">Nome Cliente</label><input class="broker-input admin-input" id="lClientName" placeholder="Nome completo"></div>
+        <div class="broker-field"><label class="broker-label">WhatsApp Cliente</label><input class="broker-input admin-input" id="lClientWa" placeholder="(51) 99999-9999"></div>
+        <div class="broker-field"><label class="broker-label">Categoria de Projeto</label>
+          <select class="broker-input admin-input form-select" id="lCategoria">
+             <option value="">Selecione...</option>
+             <option value="Lofts Boutique (24 — 40 m²)">Lofts Boutique (24 — 40 m²)</option>
+             <option value="Apartamentos Residenciais (50 — 150 m²)">Apartamentos Residenciais (50 — 150 m²)</option>
+             <option value="Casas & Grandes Aptos (Acima de 150 m²)">Casas & Grandes Aptos (Acima de 150 m²)</option>
+             <option value="Ambientes Exclusivos (Alta Exclusividade)">Ambientes Exclusivos (Alta Exclusividade)</option>
+          </select>
+        </div>
+        <div class="broker-field"><label class="broker-label">Nome Corretor</label><input class="broker-input admin-input" id="lBrokerName" placeholder="Opcional"></div>
+        <div class="broker-field"><label class="broker-label">WhatsApp Corretor</label><input class="broker-input admin-input" id="lBrokerWa" placeholder="Opcional"></div>
+        <div class="broker-field"><label class="broker-label">Estágio Inicial</label>
+          <select class="broker-input admin-input form-select" id="lStatus">
+            <option value="briefing">Briefing</option>
+            <option value="apresentacao">Apresentação</option>
+            <option value="financeiro">Financeiro</option>
+            <option value="medicao">Medição</option>
+            <option value="conferencia">Conferência</option>
+            <option value="acompanhamento">Acompanhamento</option>
+            <option value="vistoria">Vistoria</option>
+            <option value="entrega">Entrega</option>
+          </select>
+        </div>
+        <div class="broker-field" style="grid-column: 1 / -1"><label class="broker-label">Notas</label><input class="broker-input admin-input" id="lNotes" placeholder="Observações extra"></div>
+        <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end"><button class="crm-add-btn" onclick="saveLead()">Salvar Novo Lead</button></div>
+      </div>
+
+      <div class="crm-table-wrap table-responsive">
         <table class="crm-table">
-          <thead><tr><th>Data</th><th>Cliente</th><th>WhatsApp</th><th>Corretor</th><th>Estágio</th><th>Ações</th></tr></thead>
+          <thead><tr><th>Data</th><th>Cliente</th><th>Categoria</th><th>WhatsApp</th><th>Corretor</th><th>Estágio</th><th>Ações</th></tr></thead>
           <tbody id="crmTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="admin-section" id="tab-dashboard">
+      <div class="crm-table-wrap table-responsive">
+        <table class="crm-table">
+          <thead><tr><th>Parceiro</th><th>WhatsApp</th><th>Total Indicações</th><th>Indicações Quentes (Conv. %)</th></tr></thead>
+          <tbody id="dashboardTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -1518,10 +1468,6 @@ section { padding: 120px 48px; }
       </div>
       <div class="admin-list" id="projectList"></div>
     </div>
-        <div class="admin-list-item">
-          <div class="admin-list-info">
-            <div class="admin-list-name">FormulÃÂ¡rio de parceria ativo</div>
-            <div class="admin-list-meta">As solicitaÃÂ§ÃÂµes do formulÃÂ¡rio aparecerÃÂ£o aqui</div>
           </div>
         </div>
       </div>
@@ -1632,7 +1578,38 @@ function switchTab(name, btn) {
   btn.classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
   if (name==='crm') loadLeads();
+  if (name==='dashboard') loadMetrics();
   if (name==='projetos') loadProjects();
+}
+
+async function loadMetrics() {
+  await sbReady;
+  const tbody = document.getElementById('dashboardTableBody');
+  if (!tbody || !sb) return;
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:rgba(196,184,174,0.3)">Calculando métricas...</td></tr>';
+  
+  const { data: parceiros } = await sb.from('parceiros').select('*');
+  const { data: leads } = await sb.from('leads').select('parceiro_id, status');
+  if(!parceiros || !leads) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center">Erro ao carregar dados</td></tr>'; return; }
+  
+  const fechados = ['financeiro','medicao','conferencia','acompanhamento','vistoria','entrega'];
+  const metrics = parceiros.map(p => {
+    const refs = leads.filter(l => l.parceiro_id === p.id);
+    const quentes = refs.filter(l => fechados.includes(l.status));
+    const conv = refs.length > 0 ? ((quentes.length / refs.length) * 100).toFixed(1) : 0;
+    return { ...p, total: refs.length, quentes: quentes.length, conv: parseFloat(conv) };
+  }).filter(p => p.total > 0).sort((a,b) => b.conv - a.conv || b.total - a.total);
+  
+  if(!metrics.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(196,184,174,0.3);font-size:12px">Nenhuma métrica disponível.</td></tr>'; return; }
+  
+  tbody.innerHTML = metrics.map(m => `
+    <tr>
+      <td><strong style="font-weight:400">${m.nome}</strong></td>
+      <td>${m.whatsapp ? `<a href="https://wa.me/55${m.whatsapp.replace(/\D/g,'')}" target="_blank" style="color:var(--terra);text-decoration:none">${m.whatsapp}</a>` : '-'}</td>
+      <td>${m.total} indicações</td>
+      <td>${m.conv}% <small style="color:rgba(196,184,174,0.4)">(${m.quentes} fechadas)</small></td>
+    </tr>
+  `).join('');
 }
 
 // ─── CRM — LEADS ───
@@ -1662,6 +1639,7 @@ function renderCRM() {
     <tr>
       <td style="white-space:nowrap;color:rgba(196,184,174,0.5);font-size:11px">${new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
       <td><strong style="font-weight:400">${l.client_name||'-'}</strong>${l.notes?`<br><small style="color:rgba(196,184,174,0.35);font-size:10px">${l.notes}</small>`:''}</td>
+      <td style="font-size:11px;color:rgba(196,184,174,0.7);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${l.categoria_projeto||'-'}">${l.categoria_projeto||'-'}</td>
       <td>${l.client_whatsapp?`<a href="https://wa.me/55${l.client_whatsapp.replace(/\D/g,'')}" target="_blank" style="color:var(--terra);text-decoration:none">${l.client_whatsapp}</a>`:'-'}</td>
       <td style="font-size:12px;color:rgba(196,184,174,0.6)">${l.broker_name||'<em style="opacity:.4">Manual</em>'}</td>
       <td><select class="crm-status-select" onchange="updateLeadStatus('${l.id}',this.value)">${Object.entries(sl).map(([v,t])=>`<option value="${v}"${l.status===v?' selected':''}>${t}</option>`).join('')}</select></td>
@@ -1682,12 +1660,23 @@ function openAddLeadForm() {
   const f = document.getElementById('addLeadForm');
   if (f) f.style.display = f.style.display==='none'?'block':'none';
 }
+async function upsertParceiro(nome, wpp) {
+  if (!sb || !nome) return null;
+  const { data: exist } = await sb.from('parceiros').select('id').eq('nome', nome).limit(1);
+  if (exist && exist.length > 0) return exist[0].id;
+  const { data: novo } = await sb.from('parceiros').insert([{nome, whatsapp: wpp||''}]).select('id');
+  if (novo && novo.length > 0) return novo[0].id;
+  return null;
+}
 async function saveLead() {
+  const bn = document.getElementById('lBrokerName').value.trim();
+  const bw = document.getElementById('lBrokerWa').value.trim();
+  const pid = await upsertParceiro(bn, bw);
   const data = {
     client_name: document.getElementById('lClientName').value.trim(),
     client_whatsapp: document.getElementById('lClientWa').value.trim(),
-    broker_name: document.getElementById('lBrokerName').value.trim(),
-    broker_whatsapp: document.getElementById('lBrokerWa').value.trim(),
+    categoria_projeto: document.getElementById('lCategoria').value,
+    broker_name: bn, broker_whatsapp: bw, parceiro_id: pid,
     status: document.getElementById('lStatus').value,
     notes: document.getElementById('lNotes').value.trim()
   };
@@ -1695,7 +1684,7 @@ async function saveLead() {
   if (!sb) { alert('Supabase nao configurado.'); return; }
   const { error } = await sb.from('leads').insert([data]);
   if (error) { alert('Erro: '+error.message); return; }
-  ['lClientName','lClientWa','lBrokerName','lBrokerWa','lNotes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['lClientName','lClientWa','lBrokerName','lBrokerWa','lNotes','lCategoria'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('addLeadForm').style.display='none';
   loadLeads();
 }
@@ -1709,11 +1698,15 @@ async function importCRMExcel(event) {
     const leads = rows.map(r=>({
       client_name: r['Nome']||r['nome']||r['Cliente']||r['cliente']||'',
       client_whatsapp: String(r['WhatsApp']||r['whatsapp']||r['Telefone']||r['telefone']||''),
+      categoria_projeto: r['Categoria']||r['categoria']||'',
       broker_name: r['Corretor']||r['corretor']||'',
       broker_whatsapp: String(r['WhatsApp Corretor']||r['whatsapp_corretor']||''),
       status:'briefing'
     })).filter(l=>l.client_name);
     if (!leads.length) { alert('Nenhum lead encontrado. Use coluna "Nome".'); return; }
+    for (let l of leads) {
+      if (l.broker_name) l.parceiro_id = await upsertParceiro(l.broker_name, l.broker_whatsapp);
+    }
     const {error} = await sb.from('leads').insert(leads);
     if (error) { alert('Erro: '+error.message); return; }
     alert('✓ '+leads.length+' lead(s) importado(s)!');
@@ -1762,7 +1755,7 @@ function closeBrokerModal() {
   document.getElementById('brokerModal').classList.remove('open');
   document.getElementById('brokerSuccessMsg').style.display='none';
   document.getElementById('brokerFormContent').style.display='block';
-  ['bClientName','bClientWa'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['bClientName','bClientWa','bCategory'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const fs=document.getElementById('bFileStatus');if(fs)fs.textContent='';
 }
 async function submitBrokerReferral() {
@@ -1771,28 +1764,35 @@ async function submitBrokerReferral() {
   const bw=document.getElementById('bBrokerWa').value.trim();
   const cn=document.getElementById('bClientName').value.trim();
   const cw=document.getElementById('bClientWa').value.trim();
+  const cat=document.getElementById('bCategory').value;
   const fi=document.getElementById('bFileInput');
   if (!bn||!cn) { alert('Preencha seu nome e o nome do cliente.'); return; }
   brokerDataSaved={name:bn,whatsapp:bw};
+  const pid = await upsertParceiro(bn, bw);
   if (fi.files.length>0) {
     const file=fi.files[0];
-    if (file.name.match(/\.xlsx?$/i)) await processBrokerExcel(file,bn,bw);
-    else await insertLead({broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,notes:'Arquivo PDF enviado',status:'briefing'});
+    if (file.name.match(/\.xlsx?$/i)) await processBrokerExcel(file,bn,bw,pid);
+    else await insertLead({categoria_projeto:cat,parceiro_id:pid,broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,notes:'Arquivo PDF anexado',status:'briefing'});
   } else {
-    await insertLead({broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,status:'briefing'});
+    await insertLead({categoria_projeto:cat,parceiro_id:pid,broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,status:'briefing'});
   }
-  notifyWhatsApp(bn,cn,cw);
+  notifyWhatsApp(bn,cn,cw,cat);
   document.getElementById('brokerFormContent').style.display='none';
   document.getElementById('brokerSuccessMsg').style.display='block';
   setTimeout(closeBrokerModal,3000);
 }
-async function processBrokerExcel(file,bn,bw) {
+async function processBrokerExcel(file,bn,bw,pid) {
   return new Promise(resolve=>{
     const reader=new FileReader();
     reader.onload=async e=>{
       const wb=XLSX.read(e.target.result,{type:'binary'});
       const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-      const leads=rows.map(r=>({client_name:r['Nome']||r['nome']||r['Cliente']||'',client_whatsapp:String(r['WhatsApp']||r['whatsapp']||r['Telefone']||''),broker_name:bn,broker_whatsapp:bw,status:'briefing'})).filter(l=>l.client_name);
+      const leads=rows.map(r=>({
+        client_name:r['Nome']||r['nome']||r['Cliente']||'',
+        client_whatsapp:String(r['WhatsApp']||r['whatsapp']||r['Telefone']||''),
+        categoria_projeto:r['Categoria']||r['categoria']||'',
+        broker_name:bn, broker_whatsapp:bw, parceiro_id:pid, status:'briefing'
+      })).filter(l=>l.client_name);
       if (leads.length&&sb) await sb.from('leads').insert(leads);
       resolve();
     };
@@ -1811,9 +1811,9 @@ const bFileEl=document.getElementById('bFileInput');
 if(bFileEl) bFileEl.addEventListener('change',e=>{const f=e.target.files[0];const s=document.getElementById('bFileStatus');if(s)s.textContent=f?'Arquivo: '+f.name:'';});
 
 // ─── WHATSAPP NOTIFY ───
-function notifyWhatsApp(brokerName,clientName,clientWa) {
+function notifyWhatsApp(brokerName,clientName,clientWa,cat) {
   const numero='5551992214957';
-  const msg=encodeURIComponent('Nova indicacao recebida!\n\nCorretor: '+brokerName+'\nCliente: '+clientName+'\nWhatsApp do cliente: '+(clientWa||'nao informado')+'\n\nAcesse o painel admin para gerenciar este lead.');
+  const msg=encodeURIComponent('Nova indicação recebida!\n\nCorretor: '+brokerName+'\nCliente: '+clientName+'\nWhatsApp: '+(clientWa||'não informado')+'\nCategoria: '+(cat||'Não especificada')+'\n\nAcesse o painel admin para gerenciar este lead.');
   window.open('https://wa.me/'+numero+'?text='+msg,'_blank');
 }
 
