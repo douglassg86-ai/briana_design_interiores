@@ -1085,7 +1085,24 @@ section { padding: 120px 48px; }
   color: var(--linho); display: flex; align-items: center; justify-content: center;
 }
 
+
+/* ─── IMAGE UPLOADER & ADMIN EXTRAS ─── */
+.p-upload-zone {
+  border: 1px dashed rgba(196,184,174,0.3);
+  padding: 24px; text-align: center; cursor: pointer;
+  margin-top: 10px; transition: border-color 0.3s;
+}
+.p-upload-zone:hover { border-color: var(--terra); }
+.p-upload-label { cursor: pointer; color: var(--terra); text-decoration: underline; }
+.p-preview-container { display: none; margin-top: 15px; }
+.p-preview-img { max-height: 200px; width: auto; max-width: 100%; border: 1px solid rgba(196,184,174,0.2); }
+.p-stats { font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(196,184,174,0.6); margin-top: 8px; line-height: 1.5; }
+.p-progress { display: none; height: 3px; background: var(--terra); width: 0%; margin-top: 10px; transition: width 0.3s; }
+.skeleton { background: linear-gradient(90deg, var(--chumbo2) 25%, #383430 50%, var(--chumbo2) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+@keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
 /* ─── ANIMATIONS ─── */
+
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
 }
@@ -1179,6 +1196,23 @@ section { padding: 120px 48px; }
       <div class="broker-actions">
         <button class="broker-submit" onclick="submitBrokerReferral()">Enviar indicação</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PROJETO (PORTFOLIO) -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeProjectModal()">×</button>
+    <div class="modal-imgs">
+      <img src="" alt="Projeto" class="modal-img-main" id="pmImg">
+    </div>
+    <div class="modal-info">
+      <div class="modal-cat" id="pmCat">Categoria</div>
+      <div class="modal-title" id="pmTitle">Título do Projeto</div>
+      <div class="modal-rule"></div>
+      <div class="modal-desc" id="pmDesc">Descrição.</div>
+      <div class="modal-cat" style="margin-top:auto" id="pmArea">Área: -</div>
     </div>
   </div>
 </div>
@@ -1461,10 +1495,32 @@ section { padding: 120px 48px; }
       <div class="admin-form">
         <div class="admin-form-title">Adicionar Projeto</div>
         <div class="admin-grid">
-          <input class="admin-input" id="pTitulo" placeholder="Título">
-          <input class="admin-input" id="pImg" placeholder="URL Imagem">
+          <div class="admin-field"><label class="admin-label">Título</label><input class="admin-input" id="pTitulo" placeholder="Ex: Loft NYC"></div>
+          <div class="admin-field"><label class="admin-label">Categoria</label>
+            <select class="admin-select" id="pCat">
+              <option value="lofts">Lofts Boutique</option>
+              <option value="aptos">Apartamentos</option>
+              <option value="grandes">Grandes & Casas</option>
+              <option value="exclusivos">Exclusivos</option>
+            </select>
+          </div>
+          <div class="admin-field"><label class="admin-label">Área</label><input class="admin-input" id="pArea" placeholder="Ex: 45 m²"></div>
+          <div class="admin-field span2"><label class="admin-label">Descrição</label><textarea class="admin-textarea" id="pDesc" placeholder="Descreva o projeto..."></textarea></div>
+          <div class="admin-field span2">
+            <label class="admin-label">Imagem do Projeto</label>
+            <label class="p-upload-zone" for="pFile">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--terra)" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div style="margin-top:8px; font-size:13px; color:rgba(196,184,174,0.6)"><span class="p-upload-label">Escolher imagem</span> ou arraste para cá (JPG, PNG, WebP)</div>
+            </label>
+            <input type="file" id="pFile" accept="image/jpeg,image/png,image/webp,image/tiff" style="display:none" onchange="processFile(this)">
+            <div class="p-preview-container" id="pPreviewPane">
+              <img src="" id="pPreviewImg" class="p-preview-img">
+              <div class="p-stats" id="pStats"></div>
+              <div class="p-progress" id="pProgress"></div>
+            </div>
+          </div>
         </div>
-        <button class="admin-save" onclick="saveProject()">Salvar</button>
+        <button class="admin-save" id="btnSaveProj" onclick="saveProject()">Salvar Projeto</button>
       </div>
       <div class="admin-list" id="projectList"></div>
     </div>
@@ -1718,36 +1774,192 @@ async function importCRMExcel(event) {
 
 // ─── PROJETOS ───
 let projects = [];
+let pendingBlobs = null;
+
+function formatBytes(bytes) {
+  if(bytes === 0) return '0 Bytes';
+  const k = 1024, dm = 2, sizes = ['Bytes', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+async function processFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) { alert('A imagem deve ter no max 20MB.'); input.value=''; return; }
+  
+  const pPane = document.getElementById('pPreviewPane');
+  const pImg = document.getElementById('pPreviewImg');
+  const pStats = document.getElementById('pStats');
+  pPane.style.display = 'block';
+  pStats.innerHTML = 'Processando...';
+  
+  const originalSize = formatBytes(file.size);
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  await new Promise(r => { img.onload = r; });
+  
+  function resizeToBlob(maxWidth) {
+    return new Promise(resolve => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+      if (h > maxWidth) { w = Math.round((w * maxWidth) / h); h = maxWidth; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => { resolve({ blob, w, h }); }, 'image/jpeg', 0.88);
+    });
+  }
+  
+  const full = await resizeToBlob(1920);
+  const thumb = await resizeToBlob(800);
+  
+  pendingBlobs = { full: full.blob, thumb: thumb.blob, name: file.name };
+  pImg.src = URL.createObjectURL(thumb.blob);
+  
+  const fullSize = formatBytes(full.blob.size);
+  const thumbSize = formatBytes(thumb.blob.size);
+  const saving = Math.round((1 - (full.blob.size / file.size)) * 100);
+  
+  pStats.innerHTML = `
+    Original: ${img.width}x${img.height}px — ${originalSize}<br>
+    Otimizada: ${full.w}x${full.h}px — ${fullSize} (↓ ${Math.max(0, saving)}%)<br>
+    Thumbnail: ${thumb.w}x${thumb.h}px — ${thumbSize}
+  `;
+}
+
 async function loadProjects() {
   await sbReady;
-  if (sb) { const {data}=await sb.from('projects').select('*').order('created_at',{ascending:false}); projects=data||[]; }
-  else { projects=JSON.parse(localStorage.getItem('bd_projects')||'[]'); }
+  if (!sb) { projects = []; renderProjectList(); return; }
+  
+  const { data } = await sb.from('projetos').select('*').order('criado_em', { ascending: false });
+  projects = data || [];
+  
   renderProjectList();
+  renderPublicPortfolio();
 }
+
 async function saveProject() {
-  const p = {
-    title: (document.getElementById('pTitulo')?.value||'').trim(),
-    image_url: (document.getElementById('pImg')?.value||'').trim(),
-    category: document.getElementById('pCat')?.value||'lofts',
-    area: document.getElementById('pArea')?.value||'',
-    description: document.getElementById('pDesc')?.value||''
-  };
-  if (!p.title) return;
-  if (sb) { await sb.from('projects').insert([p]); loadProjects(); }
-  else { projects.push({...p,id:Date.now()}); localStorage.setItem('bd_projects',JSON.stringify(projects)); renderProjectList(); }
-  ['pTitulo','pImg','pArea','pDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const t = document.getElementById('pTitulo').value.trim();
+  const c = document.getElementById('pCat').value;
+  const a = document.getElementById('pArea').value.trim();
+  const d = document.getElementById('pDesc').value.trim();
+  const btn = document.getElementById('btnSaveProj');
+  const prog = document.getElementById('pProgress');
+  
+  if (!t || !pendingBlobs) { alert('Preencha o título e selecione uma imagem.'); return; }
+  if (!sb) { alert('Supabase não configurado corretamente.'); return; }
+  
+  btn.innerText = 'Salvando...'; btn.disabled = true;
+  prog.style.display = 'block'; prog.style.width = '30%';
+  
+  try {
+    const pId = crypto.randomUUID();
+    const fPath = `${c}/${pId}_full.jpg`;
+    const tPath = `${c}/${pId}_thumb.jpg`;
+    
+    const r1 = await sb.storage.from('portfolio').upload(fPath, pendingBlobs.full, { upsert: true, contentType: 'image/jpeg' });
+    if(r1.error) throw r1.error;
+    prog.style.width = '70%';
+    
+    const r2 = await sb.storage.from('portfolio').upload(tPath, pendingBlobs.thumb, { upsert: true, contentType: 'image/jpeg' });
+    if(r2.error) throw r2.error;
+    prog.style.width = '90%';
+    
+    const fullUrl = sb.storage.from('portfolio').getPublicUrl(fPath).data.publicUrl;
+    const thumbUrl = sb.storage.from('portfolio').getPublicUrl(tPath).data.publicUrl;
+    
+    const { error } = await sb.from('projetos').insert([{ id: pId, titulo: t, categoria: c, area: a, descricao: d, img_url: fullUrl, thumb_url: thumbUrl }]);
+    if (error) throw error;
+    
+    prog.style.width = '100%';
+    
+    ['pTitulo','pArea','pDesc','pFile'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    document.getElementById('pPreviewPane').style.display='none';
+    pendingBlobs = null;
+    
+    loadProjects();
+  } catch(e) {
+    alert('Erro ao salvar projeto: ' + e.message);
+  } finally {
+    btn.innerText = 'Salvar Projeto'; btn.disabled = false;
+    setTimeout(()=> { prog.style.display = 'none'; prog.style.width = '0%'; }, 1000);
+  }
 }
-async function deleteProject(id) {
-  if (!confirm('Remover?')) return;
-  if (sb) { await sb.from('projects').delete().eq('id',id); loadProjects(); }
-  else { projects=projects.filter(p=>String(p.id)!==String(id)); localStorage.setItem('bd_projects',JSON.stringify(projects)); renderProjectList(); }
+
+async function deleteProject(id, imgUrl, thumbUrl) {
+  if (!confirm('Tem certeza que deseja remover este projeto e suas imagens?')) return;
+  if (!sb) return;
+  
+  try {
+    const fp = imgUrl.split('/portfolio/')[1];
+    const tp = thumbUrl.split('/portfolio/')[1];
+    if (fp) await sb.storage.from('portfolio').remove([fp]);
+    if (tp) await sb.storage.from('portfolio').remove([tp]);
+    
+    await sb.from('projetos').delete().eq('id', id);
+    loadProjects();
+  } catch(e) {
+    alert('Erro ao excluir: ' + e.message);
+  }
 }
+
 function renderProjectList() {
   const list = document.getElementById('projectList');
   if (!list) return;
   if (!projects.length) { list.innerHTML='<div style="color:rgba(196,184,174,0.3);font-size:13px;padding:20px 0">Nenhum projeto cadastrado.</div>'; return; }
-  list.innerHTML = projects.map(p=>`<div class="admin-list-item"><div class="admin-list-info"><div class="admin-list-name">${p.title||p.titulo}</div><div class="admin-list-meta">${p.category||p.cat||''}</div></div><div class="admin-list-actions"><button class="admin-action-btn del" onclick="deleteProject('${p.id}')">Remover</button></div></div>`).join('');
+  list.innerHTML = projects.map(p=>`
+    <div class="admin-list-item">
+      <div style="display:flex; gap:16px; align-items:center;">
+        <img src="${p.thumb_url}" style="width:60px; height:45px; object-fit:cover; border-radius:2px" loading="lazy">
+        <div class="admin-list-info">
+          <div class="admin-list-name">${p.titulo} <span style="color:rgba(196,184,174,0.3)">— ${p.area||'-'}</span></div>
+          <div class="admin-list-meta">${p.categoria}</div>
+        </div>
+      </div>
+      <div class="admin-list-actions">
+        <button class="admin-action-btn del" onclick="deleteProject('${p.id}', '${p.img_url}', '${p.thumb_url}')">Remover</button>
+      </div>
+    </div>`).join('');
 }
+
+function renderPublicPortfolio() {
+  const cats = ['lofts','aptos','grandes','exclusivos'];
+  cats.forEach(c => {
+    const card = document.querySelector(`.cat-card[data-cat="${c}"]`);
+    if(!card) return;
+    const items = projects.filter(x => x.categoria === c);
+    
+    const bgContainer = card.querySelector('.cat-bg');
+    if (items.length > 0) {
+      bgContainer.innerHTML = `<img src="${items[0].thumb_url}" alt="${items[0].titulo}">`;
+      
+      const newCard = card.cloneNode(true);
+      card.parentNode.replaceChild(newCard, card);
+      
+      newCard.addEventListener('click', () => { openProjectModal(items[0]); });
+      newCard.style.cursor = 'pointer';
+    }
+  });
+}
+
+function openProjectModal(item) {
+  document.getElementById('pmImg').src = item.img_url;
+  document.getElementById('pmCat').innerText = item.categoria.toUpperCase();
+  document.getElementById('pmTitle').innerText = item.titulo;
+  document.getElementById('pmDesc').innerText = item.descricao || 'Nenhuma descrição adicionada.';
+  document.getElementById('pmArea').innerText = item.area ? `Área: ${item.area}` : '';
+  
+  document.getElementById('projectModal').classList.add('open');
+}
+
+function closeProjectModal() {
+  document.getElementById('projectModal').classList.remove('open');
+  // aguarda animar saida para limpar src e melhorar ux
+  setTimeout(()=> { document.getElementById('pmImg').src = ''; }, 300);
+}
+
 
 // ─── BROKER MODAL ───
 let brokerDataSaved = {name:'',whatsapp:''};
