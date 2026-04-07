@@ -2006,7 +2006,9 @@ async function submitBrokerReferral() {
   const cat=document.getElementById('bCategory').value;
   const fi=document.getElementById('bFileInput');
   
-  if (!bn||!cn) { alert('Preencha seu nome e o nome do cliente.'); return; }
+  // Novas validações de obrigatoriedade
+  if (!bn || !bw) { alert('Os dados do corretor (nome e WhatsApp) são obrigatórios.'); return; }
+  if (!cn && fi.files.length === 0) { alert('Preencha o nome do cliente indicado ou anexe uma tabela completa.'); return; }
   
   const submitBtn = document.querySelector('.broker-submit');
   submitBtn.innerText = 'Enviando...'; submitBtn.disabled = true;
@@ -2020,12 +2022,15 @@ async function submitBrokerReferral() {
   try {
     if (fi.files.length>0) {
       const file = fi.files[0];
+      // Substitui tudo que não for alfanumérico para evitar bugs em URL/File paths
       const safeName = file.name.replace(/[^a-zA-Z0-9.\-]/g, '_');
       arquivo_path = `anexos/${Date.now()}_${safeName}`;
+      
       const r = await sb.storage.from('portfolio').upload(arquivo_path, file);
-      if (!r.error) {
-        arquivo_url = sb.storage.from('portfolio').getPublicUrl(arquivo_path).data.publicUrl;
+      if (r.error) {
+        throw new Error('Falha no upload! Se o erro for do bucket, acesse seu Supabase Storage e verifique se o bucket "portfolio" permite arquivos ".pdf" e ".xlsx" e não apenas imagens. Detalhe técnico: ' + r.error.message);
       }
+      arquivo_url = sb.storage.from('portfolio').getPublicUrl(arquivo_path).data.publicUrl;
     }
 
     let notes = '';
@@ -2033,9 +2038,11 @@ async function submitBrokerReferral() {
       notes = `[ATTACH:${arquivo_path}|${arquivo_url}]`;
     }
 
+    const finalClientName = cn || (fi.files.length > 0 ? `Lista/Anexo — ${new Date().toLocaleDateString()}` : '');
+
     const mainLead = {
       categoria_projeto: cat, parceiro_id: pid, broker_name: bn, broker_whatsapp: bw,
-      client_name: cn, client_whatsapp: cw, status: 'briefing', notes
+      client_name: finalClientName, client_whatsapp: cw, status: 'briefing', notes
     };
     
     await insertLead(mainLead);
@@ -2044,13 +2051,13 @@ async function submitBrokerReferral() {
       await processBrokerExcel(fi.files[0], bn, bw, pid);
     }
 
-    notifyAdminEmail(bn, bw, cn, cw, cat, fi.files.length>0 ? 'Enviou planilhas/arquivos em anexo.' : '');
+    notifyAdminEmail(bn, bw, finalClientName, cw, cat, fi.files.length>0 ? 'Enviou planilhas/arquivos em anexo.' : '');
     
     document.getElementById('brokerFormContent').style.display='none';
     document.getElementById('brokerSuccessMsg').style.display='block';
     setTimeout(closeBrokerModal,3000);
   } catch(e) {
-    alert('Ocorreu um erro ao enviar: ' + e.message);
+    alert(e.message);
   } finally {
     submitBtn.innerText = 'Enviar indicação'; submitBtn.disabled = false;
   }
