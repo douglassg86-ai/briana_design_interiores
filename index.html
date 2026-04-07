@@ -1691,26 +1691,53 @@ function renderCRM() {
   const tbody = document.getElementById('crmTableBody');
   if (!leads.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:rgba(196,184,174,0.25);padding:40px;font-family:\'Jost\',sans-serif;font-size:11px;letter-spacing:3px">NENHUM LEAD ENCONTRADO</td></tr>'; return; }
   const sl = {briefing:'Briefing',apresentacao:'Apresentacao',financeiro:'Financeiro',medicao:'Medicao',conferencia:'Conferencia',acompanhamento:'Acompanhamento',vistoria:'Vistoria',entrega:'Entrega'};
-  tbody.innerHTML = leads.map(l=>`
+  
+  tbody.innerHTML = leads.map(l=>{
+    let notesDisp = l.notes || '';
+    let aPath = '';
+    let attachHtml = '';
+    const match = notesDisp.match(/\[ATTACH:(.+?)\|(.+?)\]/);
+    if (match) {
+      aPath = match[1];
+      notesDisp = notesDisp.replace(match[0], '').trim();
+      attachHtml = `<div style="margin-top:6px"><a href="${match[2]}" target="_blank" style="color:var(--terra);text-decoration:underline;font-size:10px">📥 Baixar Anexo</a></div>`;
+    }
+    
+    return `
     <tr>
       <td style="white-space:nowrap;color:rgba(196,184,174,0.5);font-size:11px">${new Date(l.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</td>
-      <td><strong style="font-weight:400">${l.client_name||'-'}</strong>${l.notes?`<br><small style="color:rgba(196,184,174,0.35);font-size:10px">${l.notes}</small>`:''}</td>
+      <td>
+        <strong style="font-weight:400">${l.client_name||'-'}</strong>
+        ${notesDisp?`<br><small style="color:rgba(196,184,174,0.35);font-size:10px">${notesDisp}</small>`:''}
+        ${attachHtml}
+      </td>
       <td style="font-size:11px;color:rgba(196,184,174,0.7);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${l.categoria_projeto||'-'}">${l.categoria_projeto||'-'}</td>
       <td>${l.client_whatsapp?`<a href="https://wa.me/55${l.client_whatsapp.replace(/\D/g,'')}" target="_blank" style="color:var(--terra);text-decoration:none">${l.client_whatsapp}</a>`:'-'}</td>
       <td style="font-size:12px;color:rgba(196,184,174,0.6)">${l.broker_name||'<em style="opacity:.4">Manual</em>'}</td>
       <td><select class="crm-status-select" onchange="updateLeadStatus('${l.id}',this.value)">${Object.entries(sl).map(([v,t])=>`<option value="${v}"${l.status===v?' selected':''}>${t}</option>`).join('')}</select></td>
-      <td><button class="admin-action-btn del" onclick="deleteLead('${l.id}')">Remover</button></td>
-    </tr>`).join('');
+      <td><button class="admin-action-btn del" onclick="deleteLead('${l.id}','${aPath}')">Remover</button></td>
+    </tr>`;
+  }).join('');
 }
 async function updateLeadStatus(id, status) {
   if (!sb) return;
   await sb.from('leads').update({status}).eq('id',id);
   const l = allLeads.find(x=>x.id===id); if(l) l.status=status;
 }
-async function deleteLead(id) {
+async function deleteLead(id, aPath) {
   if (!confirm('Remover este lead?')) return;
-  if (sb) await sb.from('leads').delete().eq('id',id);
-  allLeads = allLeads.filter(l=>l.id!==id); renderCRM();
+  if (!sb) return;
+  
+  try {
+    if (aPath) {
+      await sb.storage.from('portfolio').remove([aPath]);
+    }
+    await sb.from('leads').delete().eq('id',id);
+    allLeads = allLeads.filter(l=>l.id!==id); 
+    renderCRM();
+  } catch(e) {
+    alert('Erro ao excluir: ' + e.message);
+  }
 }
 function openAddLeadForm() {
   const f = document.getElementById('addLeadForm');
@@ -1978,20 +2005,55 @@ async function submitBrokerReferral() {
   const cw=document.getElementById('bClientWa').value.trim();
   const cat=document.getElementById('bCategory').value;
   const fi=document.getElementById('bFileInput');
+  
   if (!bn||!cn) { alert('Preencha seu nome e o nome do cliente.'); return; }
+  
+  const submitBtn = document.querySelector('.broker-submit');
+  submitBtn.innerText = 'Enviando...'; submitBtn.disabled = true;
+  
   brokerDataSaved={name:bn,whatsapp:bw};
   const pid = await upsertParceiro(bn, bw);
-  if (fi.files.length>0) {
-    const file=fi.files[0];
-    if (file.name.match(/\.xlsx?$/i)) await processBrokerExcel(file,bn,bw,pid);
-    else await insertLead({categoria_projeto:cat,parceiro_id:pid,broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,notes:'Arquivo PDF anexado',status:'briefing'});
-  } else {
-    await insertLead({categoria_projeto:cat,parceiro_id:pid,broker_name:bn,broker_whatsapp:bw,client_name:cn,client_whatsapp:cw,status:'briefing'});
+  
+  let arquivo_url = null;
+  let arquivo_path = null;
+  
+  try {
+    if (fi.files.length>0) {
+      const file = fi.files[0];
+      const safeName = file.name.replace(/[^a-zA-Z0-9.\-]/g, '_');
+      arquivo_path = `anexos/${Date.now()}_${safeName}`;
+      const r = await sb.storage.from('portfolio').upload(arquivo_path, file);
+      if (!r.error) {
+        arquivo_url = sb.storage.from('portfolio').getPublicUrl(arquivo_path).data.publicUrl;
+      }
+    }
+
+    let notes = '';
+    if (arquivo_url) {
+      notes = `[ATTACH:${arquivo_path}|${arquivo_url}]`;
+    }
+
+    const mainLead = {
+      categoria_projeto: cat, parceiro_id: pid, broker_name: bn, broker_whatsapp: bw,
+      client_name: cn, client_whatsapp: cw, status: 'briefing', notes
+    };
+    
+    await insertLead(mainLead);
+
+    if (fi.files.length>0 && fi.files[0].name.match(/\.xlsx?$/i)) {
+      await processBrokerExcel(fi.files[0], bn, bw, pid);
+    }
+
+    notifyAdminEmail(bn, bw, cn, cw, cat, fi.files.length>0 ? 'Enviou planilhas/arquivos em anexo.' : '');
+    
+    document.getElementById('brokerFormContent').style.display='none';
+    document.getElementById('brokerSuccessMsg').style.display='block';
+    setTimeout(closeBrokerModal,3000);
+  } catch(e) {
+    alert('Ocorreu um erro ao enviar: ' + e.message);
+  } finally {
+    submitBtn.innerText = 'Enviar indicação'; submitBtn.disabled = false;
   }
-  notifyAdminEmail(bn, bw, cn, cw, cat, fi.files.length>0 ? 'Enviou planilhas/arquivos em anexo.' : '');
-  document.getElementById('brokerFormContent').style.display='none';
-  document.getElementById('brokerSuccessMsg').style.display='block';
-  setTimeout(closeBrokerModal,3000);
 }
 async function processBrokerExcel(file,bn,bw,pid) {
   return new Promise(resolve=>{
