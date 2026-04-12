@@ -1101,6 +1101,20 @@ section { padding: 120px 48px; }
 .skeleton { background: linear-gradient(90deg, var(--chumbo2) 25%, #383430 50%, var(--chumbo2) 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
 @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
+
+.modal-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: var(--chumbo); border: 0.5px solid var(--cinza2);
+  width: 44px; height: 44px; border-radius: 50%;
+  color: var(--linho); font-size: 16px; 
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 20; transition: background 0.3s, border-color 0.3s;
+}
+.modal-nav:hover { background: var(--terra); border-color: var(--terra); }
+.modal-nav.prev { left: 24px; }
+.modal-nav.next { right: 24px; }
+.modal-imgs { position: relative; }
+
 /* ─── ANIMATIONS ─── */
 
 @keyframes fadeUp {
@@ -1206,7 +1220,11 @@ section { padding: 120px 48px; }
   <div class="modal-box">
     <button class="modal-close" onclick="closeProjectModal()">×</button>
     <div class="modal-imgs">
-      <img src="" alt="Projeto" class="modal-img-main" id="pmImg">
+      
+    <button class="modal-nav prev" id="pmPrev" onclick="prevProjectModal()">❮</button>
+    <button class="modal-nav next" id="pmNext" onclick="nextProjectModal()">❯</button>
+    <img src="" alt="Projeto" class="modal-img-main" id="pmImg">
+
     </div>
     <div class="modal-info">
       <div class="modal-cat" id="pmCat">Categoria</div>
@@ -1801,7 +1819,433 @@ async function importCRMExcel(event) {
 }
 
 // ─── PROJETOS ───
+const localProjects = [
+  {
+    "id": "lofts_CONNECT2",
+    "titulo": "CONNECT2",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/CONNECT2.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/CONNECT2.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_CONNECT3",
+    "titulo": "CONNECT3",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/CONNECT3.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/CONNECT3.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_CONNECT1",
+    "titulo": "CONNECT1",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/CONNECT1.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/CONNECT1.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_Imagem11STUDIO",
+    "titulo": "Imagem11STUDIO",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/Imagem11STUDIO.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/Imagem11STUDIO.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_CONNECT4",
+    "titulo": "CONNECT4",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/CONNECT4.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/CONNECT4.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_VISTA_MENINO_DEUS5",
+    "titulo": "VISTA MENINO DEUS5",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS5.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS5.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_VISTA_MENINO_DEUS4",
+    "titulo": "VISTA MENINO DEUS4",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS4.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS4.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_VISTA_MENINO_DEUS3",
+    "titulo": "VISTA MENINO DEUS3",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS3.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS3.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_VISTA_MENINO_DEUS2",
+    "titulo": "VISTA MENINO DEUS2",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS2.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS2.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_VISTA_MENINO_DEUS1",
+    "titulo": "VISTA MENINO DEUS1",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS1.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/VISTA MENINO DEUS1.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_START2",
+    "titulo": "START2",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/START2.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/START2.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_START3",
+    "titulo": "START3",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/START3.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/START3.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_Imagem13STUDIO",
+    "titulo": "Imagem13STUDIO",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/Imagem13STUDIO.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/Imagem13STUDIO.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_3",
+    "titulo": "3",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/3.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/3.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "lofts_Imagem14STUDIO",
+    "titulo": "Imagem14STUDIO",
+    "categoria": "lofts",
+    "img_url": "assets/images/portfolio/Lofts Boutique/Imagem14STUDIO.webp",
+    "thumb_url": "assets/images/portfolio/Lofts Boutique/Imagem14STUDIO.webp",
+    "descricao": "Detalhes deste projeto na categoria lofts",
+    "area": ""
+  },
+  {
+    "id": "aptos_ChatGPT_Image_20_de_jun._de_2025,_23_46_32",
+    "titulo": "ChatGPT Image 20 de jun. de 2025, 23_46_32",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 20 de jun. de 2025, 23_46_32.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 20 de jun. de 2025, 23_46_32.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_1(1)",
+    "titulo": "1(1)",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/1(1).webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/1(1).webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_ChatGPT_Image_21_de_jun._de_2025,_00_00_16",
+    "titulo": "ChatGPT Image 21 de jun. de 2025, 00_00_16",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_00_16.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_00_16.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_ChatGPT_Image_21_de_jun._de_2025,_00_32_49",
+    "titulo": "ChatGPT Image 21 de jun. de 2025, 00_32_49",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_32_49.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_32_49.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_Imagem3(1)",
+    "titulo": "Imagem3(1)",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/Imagem3(1).webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/Imagem3(1).webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_2(1)",
+    "titulo": "2(1)",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/2(1).webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/2(1).webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_Imagem9",
+    "titulo": "Imagem9",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/Imagem9.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/Imagem9.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_ChatGPT_Image_21_de_jun._de_2025,_00_32_11",
+    "titulo": "ChatGPT Image 21 de jun. de 2025, 00_32_11",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_32_11.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/ChatGPT Image 21 de jun. de 2025, 00_32_11.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "aptos_Imagem8",
+    "titulo": "Imagem8",
+    "categoria": "aptos",
+    "img_url": "assets/images/portfolio/Apartamentos/Imagem8.webp",
+    "thumb_url": "assets/images/portfolio/Apartamentos/Imagem8.webp",
+    "descricao": "Detalhes deste projeto na categoria aptos",
+    "area": ""
+  },
+  {
+    "id": "grandes_SALA_ESTAR",
+    "titulo": "SALA ESTAR",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/SALA ESTAR.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/SALA ESTAR.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem3",
+    "titulo": "Imagem3",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem3.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem3.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem2",
+    "titulo": "Imagem2",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem2.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem2.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_JANTAR_BAR",
+    "titulo": "JANTAR BAR",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/JANTAR BAR.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/JANTAR BAR.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem1",
+    "titulo": "Imagem1",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem1.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem1.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem2(1)",
+    "titulo": "Imagem2(1)",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem2(1).webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem2(1).webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem5",
+    "titulo": "Imagem5",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem5.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem5.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_ChatGPT_Image_21_de_jun._de_2025,_00_25_11",
+    "titulo": "ChatGPT Image 21 de jun. de 2025, 00_25_11",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/ChatGPT Image 21 de jun. de 2025, 00_25_11.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/ChatGPT Image 21 de jun. de 2025, 00_25_11.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem4",
+    "titulo": "Imagem4",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem4.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem4.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_AP2",
+    "titulo": "AP2",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/AP2.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/AP2.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem6",
+    "titulo": "Imagem6",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem6.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem6.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem7",
+    "titulo": "Imagem7",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem7.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem7.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_JANTAR",
+    "titulo": "JANTAR",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/JANTAR.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/JANTAR.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_3(1)",
+    "titulo": "3(1)",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/3(1).webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/3(1).webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_GB",
+    "titulo": "GB",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/GB.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/GB.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem4(1)",
+    "titulo": "Imagem4(1)",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem4(1).webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem4(1).webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem1(1)",
+    "titulo": "Imagem1(1)",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem1(1).webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem1(1).webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_Imagem10",
+    "titulo": "Imagem10",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/Imagem10.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/Imagem10.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_COZINHA_E_PAINEL_SALA",
+    "titulo": "COZINHA E PAINEL SALA",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/COZINHA E PAINEL SALA.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/COZINHA E PAINEL SALA.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "grandes_1",
+    "titulo": "1",
+    "categoria": "grandes",
+    "img_url": "assets/images/portfolio/Grandes & Casas/1.webp",
+    "thumb_url": "assets/images/portfolio/Grandes & Casas/1.webp",
+    "descricao": "Detalhes deste projeto na categoria grandes",
+    "area": ""
+  },
+  {
+    "id": "exclusivos_ChatGPT_Image_21_de_jun._de_2025,_00_02_57",
+    "titulo": "ChatGPT Image 21 de jun. de 2025, 00_02_57",
+    "categoria": "exclusivos",
+    "img_url": "assets/images/portfolio/Exclusivos/ChatGPT Image 21 de jun. de 2025, 00_02_57.webp",
+    "thumb_url": "assets/images/portfolio/Exclusivos/ChatGPT Image 21 de jun. de 2025, 00_02_57.webp",
+    "descricao": "Detalhes deste projeto na categoria exclusivos",
+    "area": ""
+  },
+  {
+    "id": "exclusivos_GB1",
+    "titulo": "GB1",
+    "categoria": "exclusivos",
+    "img_url": "assets/images/portfolio/Exclusivos/GB1.webp",
+    "thumb_url": "assets/images/portfolio/Exclusivos/GB1.webp",
+    "descricao": "Detalhes deste projeto na categoria exclusivos",
+    "area": ""
+  },
+  {
+    "id": "exclusivos_4",
+    "titulo": "4",
+    "categoria": "exclusivos",
+    "img_url": "assets/images/portfolio/Exclusivos/4.webp",
+    "thumb_url": "assets/images/portfolio/Exclusivos/4.webp",
+    "descricao": "Detalhes deste projeto na categoria exclusivos",
+    "area": ""
+  }
+];
 let projects = [];
+
 let pendingBlobs = null;
 
 function formatBytes(bytes) {
@@ -1859,10 +2303,10 @@ async function processFile(input) {
 
 async function loadProjects() {
   await sbReady;
-  if (!sb) { projects = []; renderProjectList(); return; }
+  if (!sb) { projects = [...localProjects]; renderProjectList(); renderPublicPortfolio(); return; }
   
   const { data } = await sb.from('projetos').select('*').order('criado_em', { ascending: false });
-  projects = data || [];
+  projects = [...localProjects, ...(data || [])];
   
   renderProjectList();
   renderPublicPortfolio();
@@ -1966,20 +2410,48 @@ function renderPublicPortfolio() {
       const newCard = card.cloneNode(true);
       card.parentNode.replaceChild(newCard, card);
       
-      newCard.addEventListener('click', () => { openProjectModal(items[0]); });
+      newCard.addEventListener('click', () => { openProjectModalGallery(c); });
       newCard.style.cursor = 'pointer';
     }
   });
 }
 
-function openProjectModal(item) {
+let currentGallery = [];
+let currentGalleryIndex = 0;
+
+function openProjectModalGallery(category) {
+  currentGallery = projects.filter(x => x.categoria === category);
+  if (currentGallery.length === 0) return;
+  currentGalleryIndex = 0;
+  updateProjectModal();
+  document.getElementById('projectModal').classList.add('open');
+}
+
+function updateProjectModal() {
+  const item = currentGallery[currentGalleryIndex];
   document.getElementById('pmImg').src = item.img_url;
   document.getElementById('pmCat').innerText = item.categoria.toUpperCase();
   document.getElementById('pmTitle').innerText = item.titulo;
   document.getElementById('pmDesc').innerText = item.descricao || 'Nenhuma descrição adicionada.';
   document.getElementById('pmArea').innerText = item.area ? `Área: ${item.area}` : '';
   
-  document.getElementById('projectModal').classList.add('open');
+  document.getElementById('pmPrev').style.display = currentGallery.length > 1 ? 'flex' : 'none';
+  document.getElementById('pmNext').style.display = currentGallery.length > 1 ? 'flex' : 'none';
+}
+
+function nextProjectModal() {
+  currentGalleryIndex = (currentGalleryIndex + 1) % currentGallery.length;
+  // trigger small fade for better ux
+  const img = document.getElementById('pmImg');
+  img.style.opacity = 0;
+  setTimeout(() => { updateProjectModal(); img.style.opacity = 1; }, 150);
+}
+
+function prevProjectModal() {
+  currentGalleryIndex = (currentGalleryIndex - 1 + currentGallery.length) % currentGallery.length;
+  const img = document.getElementById('pmImg');
+  img.style.opacity = 0;
+  setTimeout(() => { updateProjectModal(); img.style.opacity = 1; }, 150);
 }
 
 function closeProjectModal() {
