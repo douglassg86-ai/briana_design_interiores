@@ -1050,40 +1050,50 @@ section { padding: 120px 48px; }
 /* ─── MODAL PROJETO ─── */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
-  background: rgba(28,28,28,0.92); z-index: 300;
+  background: rgba(18,18,18,0.95); z-index: 300;
   align-items: center; justify-content: center;
-  padding: 48px;
+  padding: 40px;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-  background: var(--linho); max-width: 960px; width: 100%;
-  max-height: 85vh; overflow-y: auto;
-  display: grid; grid-template-columns: 1fr 1fr;
+  background: transparent; max-width: 1200px; width: 100%;
+  max-height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative;
 }
-.modal-imgs { background: var(--chumbo2); position: relative; min-height: 400px; }
-.modal-img-main { width: 100%; height: 100%; object-fit: cover; }
-.modal-info { padding: 48px; display: flex; flex-direction: column; gap: 20px; }
+.modal-imgs {
+  position: relative; width: 100%; display: flex; justify-content: center; align-items: center;
+  max-height: 80vh;
+}
+.modal-img-main {
+  max-width: 100%; max-height: 80vh; object-fit: contain; transition: opacity 0.15s ease;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.modal-info {
+  padding: 24px 0 0 0; display: flex; flex-direction: column; gap: 6px; text-align: center;
+  align-items: center; color: var(--linho); max-width: 800px; width: 100%;
+}
 .modal-cat {
   font-family: 'Jost', sans-serif;
-  font-size: 7px; letter-spacing: 5px;
+  font-size: 9px; letter-spacing: 4px;
   text-transform: uppercase; color: var(--terra);
-  font-weight: 200;
+  font-weight: 500;
 }
 .modal-title {
   font-family: 'DM Serif Display', serif;
-  font-style: italic; font-size: 32px;
-  color: var(--chumbo); line-height: 1.1;
+  font-style: normal; font-size: 26px;
+  color: var(--linho); line-height: 1.2; padding: 0 40px;
 }
-.modal-rule { width: 40px; height: 0.5px; background: var(--terra); }
-.modal-desc { font-size: 14px; color: var(--cinza); line-height: 1.8; font-weight: 300; }
+.modal-rule { display: none; }
+.modal-desc { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 300; padding: 0 20px; }
 .modal-close {
-  position: absolute; top: 24px; right: 24px; z-index: 10;
-  background: var(--chumbo); border: none;
-  width: 36px; height: 36px;
-  font-family: 'DM Serif Display', serif;
-  font-style: italic; font-size: 20px;
+  position: absolute; top: -30px; right: -30px; z-index: 310;
+  background: transparent; border: none;
+  font-size: 40px; font-weight: 200;
   color: var(--linho); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: color 0.3s;
 }
+.modal-close:hover { color: var(--terra); }
 
 
 /* ─── IMAGE UPLOADER & ADMIN EXTRAS ─── */
@@ -1149,7 +1159,7 @@ section { padding: 120px 48px; }
   .footer-bottom { padding: 18px 24px; flex-direction: column; gap: 8px; text-align: center; }
   .admin-panel { padding: 24px; }
   .admin-grid { grid-template-columns: 1fr; }
-  .modal-box { grid-template-columns: 1fr; }
+
   .mobile-close { right: 24px; top: 20px; }
 }
 @media (max-width: 600px) {
@@ -1157,8 +1167,8 @@ section { padding: 120px 48px; }
   .processo-item { border-right: none !important; border-bottom: 0.5px solid rgba(196,184,174,0.15); padding: 32px 0 !important; }
   #footer { grid-template-columns: 1fr; }
   .hero-scroll { display: none; }
-  .modal-overlay { padding: 0; }
-  .modal-box { max-height: 100vh; border-radius: 0; }
+  .modal-overlay { padding: 24px; }
+
 }
 </style>
 </head>
@@ -1217,8 +1227,9 @@ section { padding: 120px 48px; }
 
 <!-- MODAL PROJETO (PORTFOLIO) -->
 <div class="modal-overlay" id="projectModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeProjectModal()">×</button>
+  <button class="modal-close" onclick="closeProjectModal()">×</button>
+    <div class="modal-box">
+    
     <div class="modal-imgs">
       
     <button class="modal-nav prev" id="pmPrev" onclick="prevProjectModal()">❮</button>
