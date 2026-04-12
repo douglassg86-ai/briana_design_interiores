@@ -1170,6 +1170,33 @@ section { padding: 120px 48px; }
   .modal-overlay { padding: 24px; }
 
 }
+
+/* ─── INSTAGRAM ─── */
+#instagram { padding: 120px 48px; background: var(--linho); }
+.insta-container { max-width: 1400px; margin: 0 auto; }
+.insta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; gap: 24px; flex-wrap: wrap; }
+.insta-btn {
+  font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--chumbo); text-decoration: none; border: 0.5px solid var(--cinza2);
+  padding: 16px 32px; border-radius: 2px; display: inline-flex; align-items: center; gap: 12px;
+  transition: background 0.3s, color 0.3s; white-space: nowrap; font-weight: 500;
+}
+.insta-btn:hover { background: var(--terra); color: var(--linho); border-color: var(--terra); }
+.insta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.insta-post { position: relative; aspect-ratio: 1/1; overflow: hidden; display: block; border-radius: 2px; }
+.insta-post img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.insta-post:hover img { transform: scale(1.05); }
+.insta-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
+  color: var(--linho); opacity: 0; transition: opacity 0.3s ease;
+}
+.insta-post:hover .insta-overlay { opacity: 1; }
+
+@media (max-width: 900px) {
+  #instagram { padding: 80px 24px; }
+  .insta-header { flex-direction: column; align-items: flex-start; }
+  .insta-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -1404,6 +1431,44 @@ section { padding: 120px 48px; }
     <button class="dep-btn" id="depPrev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
     <button class="dep-btn" id="depNext"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
     <span class="dep-count" id="depCount">01 / 01</span>
+  </div>
+</section>
+
+
+<!-- INSTAGRAM -->
+<section id="instagram">
+  <div class="insta-container">
+    <div class="insta-header reveal">
+      <div>
+        <div class="section-eyebrow">Social</div>
+        <h2 class="section-title">Acompanhe no<br><em>Instagram</em></h2>
+      </div>
+      <a href="https://www.instagram.com/briana_designerinteriores/" target="_blank" class="insta-btn">
+        Siga @briana_designerinteriores
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="insta-grid reveal delay-1">
+      <!-- Dica: Você pode trocar o src das imagens abaixo quando publicar projetos novos -->
+      <a href="https://www.instagram.com/briana_designerinteriores/" target="_blank" class="insta-post">
+        <img src="assets/images/portfolio/Lofts Boutique/quarto-casal-escuro-minimalista.webp" alt="Post Instagram 1">
+        <div class="insta-overlay">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </div>
+      </a>
+      <a href="https://www.instagram.com/briana_designerinteriores/" target="_blank" class="insta-post">
+        <img src="assets/images/portfolio/Grandes & Casas/lareira-impressionante-em-pedra-natural.webp" alt="Post Instagram 2">
+        <div class="insta-overlay">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </div>
+      </a>
+      <a href="https://www.instagram.com/briana_designerinteriores/" target="_blank" class="insta-post">
+        <img src="assets/images/portfolio/Apartamentos/living-moderno-com-ilha.webp" alt="Post Instagram 3">
+        <div class="insta-overlay">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 
